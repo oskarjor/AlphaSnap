@@ -1,4 +1,4 @@
-from Card import Card
+from CardClass.Card import Card
 
 class Location(object):
 
@@ -20,7 +20,10 @@ class Location(object):
         return True
     
     def addCard(self, card: Card, playerIdx: int):
-        pass
+        self.cards[playerIdx].append(card)
+        self.freeSpaces[playerIdx] -= 1
+        card.atLocation = self
+        card.playerIdx = playerIdx
 
 class RuinsLocation(Location):
 
