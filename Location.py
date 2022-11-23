@@ -6,8 +6,8 @@ class Location(object):
         self.name = name
         self.idx = idx
         self.freeSpaces = freeSpaces
-        self.cards = None
-        self.totalEnergy = 0
+        self.cards = [[], []]
+        self.totalPower = [0, 0]
         self.desc = desc
 
     def __str__(self) -> str:
