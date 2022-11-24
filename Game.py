@@ -2,6 +2,8 @@ import random
 
 from Player import Player
 from Board import Board
+from Card import Card
+from Location import Location
 
 class Game(object):
     
@@ -16,6 +18,10 @@ class Game(object):
         self.board.setupLocations()
 
     def beginTurn(self):
+        # reset all information stored from previous turn
+        for location in self.board.locations:
+            location.cardPlayedThisTurn = [False, False]
+        
         self.turn += 1
         self.player1Starts = random.randint(0, 1)
         self.player1.availableEnergy = self.turn
@@ -56,7 +62,13 @@ class Game(object):
         else:
             playQueue = player2PlayQueue + player1PlayQueue
 
-        return playQueue        
+        return playQueue
+
+    def revealCards(self, playQueue: list[Card, Location, Player]):
+        for card, location, player in playQueue:
+            print(f"Player {player} played {card} at {location}!")
+            card.onReveal()
+            card.ongoing()
 
 if __name__ == "__main__":
     board = Board()
@@ -72,6 +84,6 @@ if __name__ == "__main__":
         movesPlayed = game.playTurn()
         for move in movesPlayed:
             card, location, player = move
-            print(f"Player {player} played {card} at {location}!")
+            
         print("\n")
 
