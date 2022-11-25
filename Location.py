@@ -31,7 +31,7 @@ class Location(object):
 
     def triggerOnReveal(self, card: Card):
         if(self.onRevealEnabled):
-            card.onReveal()
+            return card.onReveal()
 
 
     def removeCard(self, card: Card, playerIdx: int):
