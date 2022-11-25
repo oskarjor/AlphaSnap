@@ -1,3 +1,5 @@
+import random
+
 class Card(object):
 
     def __init__(self, cost, power, name):
@@ -7,6 +9,7 @@ class Card(object):
         self.atLocation = None
         self.playerIdx = None
         self.ongoingTriggered = False
+        self.revealed = False
 
     def __str__(self) -> str:
         return f"{self.name} (cost: {self.cost}, power: {self.power})"
@@ -15,8 +18,33 @@ class Card(object):
         return None
 
     def onReveal(self):
+        self.revealed = True
         return None
 
+    def onDestroy(self):
+        return None
+
+    def onMove(self):
+        return None
+
+    def summon(self):
+        return None
+
+
+### Abstract (but slightly more specialized) classes
+#
+#
+
+class PredictCard(Card):
+
+    def __init__(self, cost, power, name, predPowerGain):
+        self.predPowerGain = predPowerGain
+        super().__init__(cost, power, name)
+
+    def onReveal(self):
+        self.revealed = True
+        if(self.atLocation.cardPlayedThisTurn[1 - self.playerIdx]):
+            self.power += self.predPowerGain
 
 ### 1-cost cards
 #
@@ -46,7 +74,28 @@ class AntMan(Card):
             self.ongoingTriggered = False
             self.power -= 3
 
-    
+
+class Elektra(Card):
+
+    def __init__(self):
+        super().__init__(1, 1, "Elektra")
+
+    def onReveal(self):
+        self.revealed = True
+        opposingOneCostCards = []
+        for card in self.atLocation.getRevealedCards(1 - self.playerIdx):
+            if card.cost == 1:
+                opposingOneCostCards.append(card)
+        
+        if(len(opposingOneCostCards) == 0):
+            return None
+        
+        cardToRemove = random.choice(opposingOneCostCards)
+        print(cardToRemove)
+        self.atLocation.removeCard(cardToRemove, 1 - self.playerIdx)
+        return cardToRemove
+
+
 ### 2-cost cards
 #
 #
@@ -57,14 +106,10 @@ class Shocker(Card):
         super(Shocker, self).__init__(2, 3, "Shocker")
 
 
-class StarLord(Card):
+class StarLord(PredictCard):
 
     def __init__(self):
-        super().__init__(2, 2, "Star Lord")
-
-    def onReveal(self):
-        if(self.atLocation.cardPlayedThisTurn[1 - self.playerIdx]):
-            self.power += 3
+        super().__init__(cost=2, power=2, name="Star Lord", predPowerGain=3)
 
 
 ### 3-cost cards
@@ -75,6 +120,11 @@ class Cyclops(Card):
 
     def __init__(self):
         super(Cyclops, self).__init__(3, 4, "Cyclops")
+
+class Groot(PredictCard):
+
+    def __init__(self):
+        super().__init__(cost=3, power=3, name="Groot", predPowerGain=3)
 
 
 ### 4-cost cards
