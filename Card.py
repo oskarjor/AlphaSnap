@@ -91,7 +91,6 @@ class Elektra(Card):
             return None
         
         cardToRemove = random.choice(opposingOneCostCards)
-        print(cardToRemove)
         self.atLocation.removeCard(cardToRemove, 1 - self.playerIdx)
         return cardToRemove
 
