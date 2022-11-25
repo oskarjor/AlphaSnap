@@ -41,6 +41,12 @@ class Location(object):
     def getTotalPower(self, playerIdx: int):
         return sum([card.power for card in self.cards[playerIdx]])
 
+    def getCards(self, playerIdx: int):
+        return self.cards[playerIdx]
+
+    def getRevealedCards(self, playerIdx: int):
+        return [card for card in self.cards[playerIdx] if card.revealed]
+
     def getAmountOfCards(self, playerIdx: int):
         return len(self.cards[playerIdx])
 
