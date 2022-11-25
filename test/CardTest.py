@@ -99,6 +99,28 @@ class TestCards(unittest.TestCase):
         removedCard = self.location.triggerOnReveal(elektra)
         self.assertEqual(removedCard, mistyKnight)
         self.assertEqual(self.location.getAmountOfCards(0), 1)
+
+    
+    def test_Yellowjacket(self):
+        revealedMistyKnight = Card.MistyKnight()
+        unrevealedMistyKnight = Card.MistyKnight()
+        opposingMistyKnight = Card.MistyKnight()
+        yellowjacket = Card.Yellowjacket()
+
+        self.location.addCard(revealedMistyKnight, 0)
+        revealedMistyKnight.onReveal()
+        self.location.addCard(unrevealedMistyKnight, 0)
+        self.location.addCard(opposingMistyKnight, 1)
+        self.location.addCard(yellowjacket, 0)
+        yellowjacket.onReveal()
+        unrevealedMistyKnight.onReveal()
+
+        self.assertEqual(self.location.getTotalPower(0), 2+2+1)
+        self.assertEqual(self.location.getTotalPower(1), 2)
+
+        self.assertEqual(revealedMistyKnight.power, 1)
+        self.assertEqual(unrevealedMistyKnight.power, 2)
+        self.assertEqual(yellowjacket.power, 2)
         
 
 
