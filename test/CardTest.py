@@ -80,6 +80,25 @@ class TestCards(unittest.TestCase):
         starLord.onReveal()
         self.assertEqual(self.location.getTotalPower(0), 2)
         self.assertEqual(self.location.getTotalPower(1), 5)
+
+    def test_elektra(self):
+        mistyKnight = Card.MistyKnight()
+        abomination = Card.Abomination()
+        elektra = Card.Elektra()
+
+        # when cards are not revealed, no cards are removed
+        self.location.addCard(mistyKnight, 0)
+        self.location.addCard(abomination, 0)
+        self.location.addCard(elektra, 1)
+        self.assertEqual(self.location.triggerOnReveal(elektra), None)
+        self.assertEqual(self.location.getAmountOfCards(0), 2)
+
+        # reveal the to opposing cards
+        self.location.triggerOnReveal(mistyKnight)
+        self.location.triggerOnReveal(abomination)
+        removedCard = self.location.triggerOnReveal(elektra)
+        self.assertEqual(removedCard, mistyKnight)
+        self.assertEqual(self.location.getAmountOfCards(0), 1)
         
 
 
