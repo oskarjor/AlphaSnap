@@ -46,20 +46,34 @@ class PredictCard(Card):
         if(self.atLocation.cardPlayedThisTurn[1 - self.playerIdx]):
             self.power += self.predPowerGain
 
+### 0-cost cards
+#
+#
+
+class Wasp(Card):
+
+    def __init__(self, cost=0, power=1, name="Wasp"):
+        super().__init__(cost, power, name)
+
+class Yellowjacket(Card):
+
+    def __init__(self, cost=0, power=2, name="Yellowjacket"):
+        super().__init__(cost, power, name)
+
 ### 1-cost cards
 #
 #
 
 class MistyKnight(Card):
     
-    def __init__(self):
-        super(MistyKnight, self).__init__(1, 2, "Misty Knight")
+    def __init__(self, cost=1, power=2, name="Misty Knight"):
+        super().__init__(cost, power, name)
         
 
 class AntMan(Card):
 
-    def __init__(self):
-        super(AntMan, self).__init__(1, 1, "Ant-Man")
+    def __init__(self, cost=1, power=1, name="Ant-Man"):
+        super().__init__(cost, power, name)
 
     def ongoing(self):
         locationFull = len(self.atLocation.cards[self.playerIdx]) == 4
@@ -77,8 +91,8 @@ class AntMan(Card):
 
 class Elektra(Card):
 
-    def __init__(self):
-        super().__init__(1, 1, "Elektra")
+    def __init__(self, cost=1, power=1, name="Elektra"):
+        super().__init__(cost, power, name)
 
     def onReveal(self):
         self.revealed = True
@@ -101,14 +115,14 @@ class Elektra(Card):
 
 class Shocker(Card):
 
-    def __init__(self):
-        super(Shocker, self).__init__(2, 3, "Shocker")
+    def __init__(self, cost=2, power=3, name="Shocker"):
+        super().__init__(cost, power, name)
 
 
 class StarLord(PredictCard):
 
-    def __init__(self):
-        super().__init__(cost=2, power=2, name="Star Lord", predPowerGain=3)
+    def __init__(self, cost=2, power=2, name="Star Lord", predPowerGain=3):
+        super().__init__(cost, power, name, predPowerGain)
 
 
 ### 3-cost cards
@@ -117,13 +131,13 @@ class StarLord(PredictCard):
 
 class Cyclops(Card):
 
-    def __init__(self):
-        super(Cyclops, self).__init__(3, 4, "Cyclops")
+    def __init__(self, cost=3, power=4, name="Cyclops"):
+        super().__init__(cost, power, name)
 
 class Groot(PredictCard):
 
-    def __init__(self):
-        super().__init__(cost=3, power=3, name="Groot", predPowerGain=3)
+    def __init__(self, cost=3, power=3, name="Groot", predPowerGain=3):
+        super().__init__(cost, power, name, predPowerGain)
 
 
 ### 4-cost cards
@@ -132,5 +146,5 @@ class Groot(PredictCard):
 
 class Abomination(Card):
 
-    def __init__(self):
-        super(Abomination, self).__init__(4, 6, "Abomination")
+    def __init__(self, cost=4, power=6, name="Abomination"):
+        super().__init__(cost, power, name)
