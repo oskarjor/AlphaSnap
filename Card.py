@@ -7,8 +7,7 @@ class Card(object):
         self.cost = cost
         self.power = power
         self.atLocation = None
-        self.playerIdx = None
-        self.ongoingTriggered = False
+        self.player = None
         self.revealed = False
 
     def __str__(self) -> str:
@@ -37,13 +36,25 @@ class Card(object):
 
 class PredictCard(Card):
 
+    def __init__(self, cost, power, name, predFunc, *args):
+        self.predFunc = predFunc
+        self.args = args
+        super().__init__(cost, power, name)
+
+    def onReveal(self):
+        self.revealed = True
+        if(self.atLocation.cardPlayedThisTurn[1 - self.player.playerIdx]):
+            self.predFunc(*self.args)
+
+class PredictCardPowerGain(Card):
+
     def __init__(self, cost, power, name, predPowerGain):
         self.predPowerGain = predPowerGain
         super().__init__(cost, power, name)
 
     def onReveal(self):
         self.revealed = True
-        if(self.atLocation.cardPlayedThisTurn[1 - self.playerIdx]):
+        if(self.atLocation.cardPlayedThisTurn[1 - self.player.playerIdx]):
             self.power += self.predPowerGain
 
 ### 0-cost cards
@@ -60,9 +71,22 @@ class Yellowjacket(Card):
     def __init__(self, cost=0, power=2, name="Yellowjacket"):
         super().__init__(cost, power, name)
 
+    def onReveal(self):
+        revealedCardsAtLocation = self.atLocation.getRevealedCards(self.player.playerIdx)
+        for card in revealedCardsAtLocation:
+            card.power -= 1
+
 ### 1-cost cards
 #
 #
+
+class Mantis(PredictCard):
+
+    def __init__(self, cost, power, name, predFunc, *args):
+        super().__init__(cost, power, name, predFunc, *args)
+
+    def drawCard():
+        pass
 
 class MistyKnight(Card):
     
@@ -73,10 +97,11 @@ class MistyKnight(Card):
 class AntMan(Card):
 
     def __init__(self, cost=1, power=1, name="Ant-Man"):
+        self.ongoingTriggered = False
         super().__init__(cost, power, name)
 
     def ongoing(self):
-        locationFull = len(self.atLocation.cards[self.playerIdx]) == 4
+        locationFull = len(self.atLocation.cards[self.player.playerIdx]) == 4
 
         # trigger ongoing if location is full
         if(locationFull and not self.ongoingTriggered):
@@ -97,7 +122,7 @@ class Elektra(Card):
     def onReveal(self):
         self.revealed = True
         opposingOneCostCards = []
-        for card in self.atLocation.getRevealedCards(1 - self.playerIdx):
+        for card in self.atLocation.getRevealedCards(1 - self.player.playerIdx):
             if card.cost == 1:
                 opposingOneCostCards.append(card)
         
@@ -105,7 +130,7 @@ class Elektra(Card):
             return None
         
         cardToRemove = random.choice(opposingOneCostCards)
-        self.atLocation.removeCard(cardToRemove, 1 - self.playerIdx)
+        self.atLocation.removeCard(cardToRemove, 1 - self.player.playerIdx)
         return cardToRemove
 
 
@@ -119,7 +144,7 @@ class Shocker(Card):
         super().__init__(cost, power, name)
 
 
-class StarLord(PredictCard):
+class StarLord(PredictCardPowerGain):
 
     def __init__(self, cost=2, power=2, name="Star Lord", predPowerGain=3):
         super().__init__(cost, power, name, predPowerGain)
@@ -134,7 +159,7 @@ class Cyclops(Card):
     def __init__(self, cost=3, power=4, name="Cyclops"):
         super().__init__(cost, power, name)
 
-class Groot(PredictCard):
+class Groot(PredictCardPowerGain):
 
     def __init__(self, cost=3, power=3, name="Groot", predPowerGain=3):
         super().__init__(cost, power, name, predPowerGain)
