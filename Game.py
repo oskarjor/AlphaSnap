@@ -64,26 +64,68 @@ class Game(object):
 
         return playQueue
 
+    def endGame(self):
+        pass
+
     def revealCards(self, playQueue: list[Card, Location, Player]):
         for card, location, player in playQueue:
             print(f"Player {player} played {card} at {location}!")
             card.onReveal()
             card.ongoing()
 
+    def visualizeBoard(self, board: Board):
+        player0Cards = []
+        player1Cards = []
+        allLocations = []
+        for i, location in enumerate(board.locations):
+            player0Cards.append(location.getCards(0).copy())
+            player1Cards.append(location.getCards(1).copy())
+            player0Cards[i] += [''] * (4 - len(player0Cards[i]))
+            player1Cards[i] += [''] * (4 - len(player1Cards[i]))
+            allLocations.append(location)
+
+
+        print("Player 1 (opponent):")
+        print("-" * 124)
+        for i in range(3, -1, -1):
+            print(f"| Spot {i+1} | {str(player1Cards[0][i]).center(35)} | {str(player1Cards[1][i]).center(35)} | {str(player1Cards[2][i]).center(35)} |")
+        print("-" * 124)
+        print(f"|        | {str(allLocations[0]).center(35)} | {str(allLocations[1]).center(35)} | {str(allLocations[2]).center(35)} |")
+        print("-" * 124)
+        for i in range(0, 4, 1):
+            print(f"| Spot {i+1} | {str(player0Cards[0][i]).center(35)} | {str(player0Cards[1][i]).center(35)} | {str(player0Cards[2][i]).center(35)} |")
+        print("-" * 124)
+        print("Player 0 (you):")
+        print("")
+
+
 if __name__ == "__main__":
     board = Board()
-    cardNames1 = ["mistyKnight", "cyclops"]
-    cardNames2 = ["shocker", "abomination"]
-    player1 = Player(cardNames=cardNames1, playerIdx=0)
-    player2 = Player(cardNames=cardNames2, playerIdx=1)
-    game = Game(board, player1, player2)
+    cardNames0 = ["mistyKnight", "cyclops"]
+    cardNames1 = ["shocker", "abomination"]
+    player0 = Player(cardNames=cardNames0, playerIdx=0)
+    player1 = Player(cardNames=cardNames1, playerIdx=1)
+    game = Game(board, player0, player1)
     game.startGame()
-    for i in range(1, 3):
-        print(f"Round {i}")
-        print("------------------------")
+    for i in range(1, 7):
+        print("-" * 124)
+        print(f"ROUND {i}")
+        print("-" * 124)
         movesPlayed = game.playTurn()
         for move in movesPlayed:
             card, location, player = move
-            
-        print("\n")
+            print(f"Player {player.playerIdx} played {card} at {location}!")
+        print("-" * 124)
+        print()
+        game.visualizeBoard(game.board)
+        if(i == 6):
+            game.endGame()
+            continue
+        play_next_turn = input("Do you wish to play next turn [y/n]: ")
+        if play_next_turn.lower() == "y":
+            print("\n")
+            continue
+        elif play_next_turn.lower() == "n":
+            print("Game aborted")
+            break
 
