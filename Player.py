@@ -20,11 +20,9 @@ class Player(object):
         return str(self.playerIdx)
 
     def playIsLegal(self, card: Card, location: Location) -> bool:
-        if(not location.isPlayable(playerIdx=self.playerIdx)):
-            #print("The location is full or obstructed")
+        if(not location.getPlayable(playerIdx=self.playerIdx)):
             return False
         if(card.cost > self.availableEnergy):
-            #print(f"You don't have enough energy to play this card ({card})")
             return False
         return True
     
