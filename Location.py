@@ -15,12 +15,13 @@ class Location(object):
     def __str__(self) -> str:
         return f"{self.name} ({self.idx})"
     
-    def addCard(self, card: Card, playerIdx: int):
+    def addCard(self, card: Card, player: int):
+        playerIdx = player.playerIdx
         if(not self.getPlayable(playerIdx=playerIdx)):
             raise ValueError("Can't add more cards here")
         self.cards[playerIdx].append(card)
         card.atLocation = self
-        card.playerIdx = playerIdx
+        card.player = player
         self.cardPlayedThisTurn[playerIdx] = True
 
     def triggerAllOngoing(self, playerIdx: int):

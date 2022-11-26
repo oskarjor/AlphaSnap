@@ -11,7 +11,7 @@ class Player(object):
     def __init__(self, cardNames: list[str], playerIdx: int, availableEnergy: int = 0) -> None:
         self.cardNames = cardNames
         self.deck = Deck(cardNames)
-        self.hand = None
+        self.hand = []
         self.isStarting = None
         self.availableEnergy = availableEnergy
         self.playerIdx = playerIdx
@@ -31,6 +31,9 @@ class Player(object):
     def selectMove(self, legalMoves: list[list[Card, Location]]) -> list[Card, Location]:
         move = random.choice(legalMoves)
         return move
+
+    def drawCard(self):
+        self.hand.append(self.deck.pop(0))
     
     def playMove(self, legalMoves: list[list[Card, Location]]) -> bool:
         move = self.selectMove(legalMoves)
@@ -39,7 +42,7 @@ class Player(object):
         card, location = move
         if(not self.playIsLegal(card, location)):
             print("This play is illegal")
-        location.addCard(card, self.playerIdx)
+        location.addCard(card, self)
         self.availableEnergy -= card.cost
         return move
         
