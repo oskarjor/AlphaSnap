@@ -12,6 +12,7 @@ class Board(object):
         #print(f"Location {idx}: {currentLocation}")
         self.locations[idx] = LOCATION_DICT[currentLocation](idx)
     
+    # TODO: the 3 locations should (to my knowledge) be distinct
     def setupLocations(self) -> None:
         #print("Selecting locations")
         for i in range(3):
