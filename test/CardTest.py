@@ -19,7 +19,7 @@ class TestCards(unittest.TestCase):
         self.assertEqual(mistyKnight.atLocation, None)
         self.assertEqual(mistyKnight.player, None)
         self.assertEqual(mistyKnight.revealed, False)
-        self.assertEqual(str(mistyKnight), "Misty Knight (cost: 1, power: 2)")
+        self.assertEqual(str(mistyKnight), "Misty Knight (C: 1, P: 2)")
 
     def test_tooManyCards(self):
         mistyKnight1 = Card.MistyKnight()
@@ -43,10 +43,14 @@ class TestCards(unittest.TestCase):
 
         self.location.addCard(mistyKnight1, self.player0)
         self.location.addCard(mistyKnight2, self.player0)
+        self.location.triggerOnReveal(mistyKnight1)
+        self.location.triggerOnReveal(mistyKnight2)
         self.assertEqual(self.location.getTotalPower(self.player0.playerIdx), 2+2)
 
         self.location.addCard(shocker, self.player1)
         self.location.addCard(cyclops, self.player1)
+        self.location.triggerOnReveal(shocker)
+        self.location.triggerOnReveal(cyclops)
         self.assertEqual(self.location.getTotalPower(self.player1.playerIdx), 3+4)
         self.assertEqual(self.location.getTotalPower(self.player0.playerIdx), 2+2)
         
@@ -60,14 +64,21 @@ class TestCards(unittest.TestCase):
         self.location.addCard(mistyKnight1, self.player0)
         self.location.addCard(mistyKnight2, self.player0)
         self.location.addCard(antMan, self.player0)
+        self.location.triggerOnReveal(mistyKnight1)
+        self.location.triggerOnReveal(mistyKnight2)
+        self.location.triggerOnReveal(antMan)
+        
         antMan.ongoing()
         self.assertEqual(self.location.getTotalPower(self.player0.playerIdx), 2+2+1)
         self.assertFalse(antMan.ongoingTriggered)
 
         self.location.addCard(mistyKnight3, self.player0)
         antMan.ongoing()
-        self.assertEqual(self.location.getTotalPower(self.player0.playerIdx), 2+2+2+4)
+        self.assertEqual(self.location.getTotalPower(self.player0.playerIdx), 2+2+4)
         self.assertTrue(antMan.ongoingTriggered)
+
+        self.location.triggerOnReveal(mistyKnight3)
+        self.assertEqual(self.location.getTotalPower(self.player0.playerIdx), 2+2+2+4)
 
         self.location.removeCard(mistyKnight1, self.player0.playerIdx)
         antMan.ongoing()
@@ -81,7 +92,8 @@ class TestCards(unittest.TestCase):
 
         self.location.addCard(mistyKnight, self.player0)
         self.location.addCard(starLord, self.player0)
-        starLord.onReveal()
+        self.location.triggerOnReveal(mistyKnight)
+        self.location.triggerOnReveal(starLord)
         self.assertEqual(self.location.getTotalPower(self.player0.playerIdx), 2+2)
 
     def test_starLordTrigger(self):
@@ -90,7 +102,8 @@ class TestCards(unittest.TestCase):
 
         self.location.addCard(mistyKnight, self.player0)
         self.location.addCard(starLord, self.player1)
-        starLord.onReveal()
+        self.location.triggerOnReveal(mistyKnight)
+        self.location.triggerOnReveal(starLord)
         self.assertEqual(self.location.getTotalPower(self.player0.playerIdx), 2)
         self.assertEqual(self.location.getTotalPower(self.player1.playerIdx), 5)
 
@@ -121,13 +134,13 @@ class TestCards(unittest.TestCase):
         yellowjacket = Card.Yellowjacket()
 
         self.location.addCard(revealedMistyKnight, self.player0)
-        revealedMistyKnight.onReveal()
+        self.location.triggerOnReveal(revealedMistyKnight)
         self.location.addCard(unrevealedMistyKnight, self.player0)
         self.location.addCard(opposingMistyKnight, self.player1)
         self.location.addCard(yellowjacket, self.player0)
-        yellowjacket.onReveal()
-        unrevealedMistyKnight.onReveal()
-
+        self.location.triggerOnReveal(opposingMistyKnight)
+        self.location.triggerOnReveal(yellowjacket)
+        self.location.triggerOnReveal(unrevealedMistyKnight)
         self.assertEqual(self.location.getTotalPower(self.player0.playerIdx), 2+2+1)
         self.assertEqual(self.location.getTotalPower(self.player1.playerIdx), 2)
 
