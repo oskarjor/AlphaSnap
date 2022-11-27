@@ -1,11 +1,11 @@
-from Location import RuinsLocation
+from Location import Ruins
 import Card
 
 DECKSIZE = 12
 NUM_LOCATIONS = 3
 
 LOCATION_DICT = {
-    "ruins": RuinsLocation
+    "ruins": Ruins
 }
 
 CARD_DICT = {
