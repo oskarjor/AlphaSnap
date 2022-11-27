@@ -11,7 +11,7 @@ class Card(object):
         self.revealed = False
 
     def __str__(self) -> str:
-        return f"{self.name} (cost: {self.cost}, power: {self.power})"
+        return f"{self.name} (C: {self.cost}, P: {self.power})"
 
     def ongoing(self):
         return None
