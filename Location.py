@@ -1,8 +1,9 @@
 from Card import Card
+# import Player
 
 class Location(object):
 
-    def __init__(self, name: str, idx: int, cardSpaces: list[int, int], desc: str) -> None:
+    def __init__(self, idx: int, name: str, cardSpaces: list[int, int], desc: str) -> None:
         self.name = name
         self.idx = idx
         self.cardSpaces = cardSpaces
@@ -11,11 +12,15 @@ class Location(object):
         self.ongoinEnabled = True
         self.onRevealEnabled = True
         self.cardPlayedThisTurn = [False, False]
+        self.otherPowerSources = []
 
     def __str__(self) -> str:
         return f"{self.name} ({self.idx})"
+
+    def locationAbility(self):
+        return None
     
-    def addCard(self, card: Card, player: int):
+    def addCard(self, card: Card, player):
         playerIdx = player.playerIdx
         if(not self.getPlayable(playerIdx=playerIdx)):
             raise ValueError("Can't add more cards here")
@@ -40,7 +45,7 @@ class Location(object):
         self.triggerAllOngoing(playerIdx)
     
     def getTotalPower(self, playerIdx: int):
-        return sum([card.power for card in self.getRevealedCards(playerIdx)])
+        return sum([card.getPower() for card in self.getRevealedCards(playerIdx)])
 
     def getCards(self, playerIdx: int):
         return self.cards[playerIdx]
@@ -56,7 +61,20 @@ class Location(object):
             return True
         return False
 
-class RuinsLocation(Location):
+class Ruins(Location):
 
-    def __init__(self, idx: int):
-        super(RuinsLocation, self).__init__(name="Ruins", idx=idx, cardSpaces=[4, 4], desc="A ruined land")
+    def __init__(self, idx, name= "Ruins", cardSpaces=[4, 4], desc="A ruined land") -> None:
+        super().__init__(name, idx, cardSpaces, desc)
+
+class Atlantis(Location):
+
+    def __init__(self, idx, name="Atlantis", cardSpaces=[4, 4], desc="If you only have one card here, it has +5 Power") -> None:
+        super().__init__(idx, name, cardSpaces, desc)
+
+    def locationAbility(self):
+        for i in range(2):
+            if(len(self.cards[i]) == 1):
+                self.cards[i][0].otherPowerSources[self] = 5
+            else:
+                for card in self.cards[i]:
+                    card.otherPowerSources.pop(self, None)
