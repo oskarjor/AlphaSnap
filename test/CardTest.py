@@ -3,6 +3,7 @@ import unittest
 import Card
 import Location
 import Player
+import Deck
 
 class TestCards(unittest.TestCase):
 
@@ -147,6 +148,28 @@ class TestCards(unittest.TestCase):
         self.assertEqual(revealedMistyKnight.power, 1)
         self.assertEqual(unrevealedMistyKnight.power, 2)
         self.assertEqual(yellowjacket.power, 2)
+
+
+    def test_MantisTrigger(self):
+        mistyKnight = Card.MistyKnight()
+        mantis = Card.Mantis()
+        self.player1.deck = Deck.Deck(["mistyKnight", "antMan"])
+
+        prevHandSize = len(self.player1.hand)
+        self.location.addCard(mistyKnight, self.player0)
+        self.location.addCard(mantis, self.player1)
+        self.location.triggerOnReveal(mistyKnight)
+        self.location.triggerOnReveal(mantis)
+        self.assertEqual(len(self.player1.hand), prevHandSize + 1)
+    
+    def test_MantisTrigger(self):
+        mantis = Card.Mantis()
+        self.player1.deck = Deck.Deck(["mistyKnight", "antMan"])
+
+        prevHandSize = len(self.player1.hand)
+        self.location.addCard(mantis, self.player1)
+        self.location.triggerOnReveal(mantis)
+        self.assertEqual(len(self.player1.hand), prevHandSize)
         
 
 
