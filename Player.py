@@ -5,13 +5,14 @@ from CONSTANTS import CARD_DICT, DECKSIZE
 from Card import Card
 from Location import Location
 from Deck import Deck
+import Hand
 
 class Player(object):
     
     def __init__(self, cardNames: list[str], playerIdx: int, availableEnergy: int = 0) -> None:
         self.cardNames = cardNames
         self.deck = Deck(cardNames)
-        self.hand = []
+        self.hand = Hand.Hand()
         self.isStarting = None
         self.availableEnergy = availableEnergy
         self.playerIdx = playerIdx
@@ -31,9 +32,10 @@ class Player(object):
         return move
 
     def drawCard(self):
-        cardToAdd = self.deck.removeCard(0)
-        if cardToAdd != None and len(self.hand) < 7:
-            self.hand.append(cardToAdd)
+        if(self.hand.handIsFull()):
+            return False
+        self.hand.addCard(self.deck.removeCard())
+        return True
     
     def playMove(self, legalMoves: list[list[Card, Location]]) -> bool:
         move = self.selectMove(legalMoves)
@@ -43,7 +45,7 @@ class Player(object):
         if(not self.playIsLegal(card, location)):
             print("This play is illegal")
         location.addCard(card, self)
-        self.hand.remove(card)
+        self.hand.removeCard(card)
         self.availableEnergy -= card.cost
         return move
         
