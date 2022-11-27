@@ -42,8 +42,8 @@ class Player(object):
         if(move == None):
             return None
         card, location = move
-        if(not self.playIsLegal(card, location)):
-            print("This play is illegal")
+        if(not self.playIsLegal(card, location)): # technically reduntant
+            return None
         location.addCard(card, self)
         self.hand.removeCard(card)
         self.availableEnergy -= card.cost
