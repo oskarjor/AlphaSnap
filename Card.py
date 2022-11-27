@@ -86,11 +86,11 @@ class Yellowjacket(Card):
 
 class Mantis(PredictCard):
 
-    def __init__(self, cost, power, name, predFunc, *args):
-        super().__init__(cost, power, name, predFunc, *args)
+    def __init__(self, cost=1, power=2, name="Mantis", *args):
+        super().__init__(cost, power, name, self.drawCard, *args)
 
-    def drawCard():
-        pass
+    def drawCard(self):
+        self.player.drawCard()
 
 class MistyKnight(Card):
     
