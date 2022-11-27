@@ -166,10 +166,10 @@ class TestCards(unittest.TestCase):
         mantis = Card.Mantis()
         self.player1.deck = Deck.Deck(["mistyKnight", "antMan"])
 
-        prevHandSize = len(self.player1.hand)
+        prevHandSize = self.player1.hand.getNumCards()
         self.location.addCard(mantis, self.player1)
         self.location.triggerOnReveal(mantis)
-        self.assertEqual(len(self.player1.hand), prevHandSize)
+        self.assertEqual(self.player1.hand.getNumCards(), prevHandSize)
         
 
 
