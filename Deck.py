@@ -1,4 +1,5 @@
 from CONSTANTS import FLAT_CARD_DICT
+import random
 
 class Deck(object):
     def __init__(self, cardNames: list[str]) -> None:
@@ -16,3 +17,6 @@ class Deck(object):
         if(len(self.cards) == 0):
             return
         return self.cards.pop(index)
+
+    def shuffle(self):
+        random.shuffle(self.cards)
