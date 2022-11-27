@@ -8,7 +8,7 @@ import Deck
 class TestCards(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.location = Location.RuinsLocation(0)
+        self.location = Location.Ruins(0)
         self.player0 = Player.Player([], playerIdx=0, availableEnergy=0)
         self.player1 = Player.Player([], playerIdx=1, availableEnergy=0)
 
@@ -128,7 +128,7 @@ class TestCards(unittest.TestCase):
         self.assertEqual(self.location.getAmountOfCards(self.player0.playerIdx), 1)
 
     
-    def test_Yellowjacket(self):
+    def test_yellowjacket(self):
         revealedMistyKnight = Card.MistyKnight()
         unrevealedMistyKnight = Card.MistyKnight()
         opposingMistyKnight = Card.MistyKnight()
@@ -150,7 +150,7 @@ class TestCards(unittest.TestCase):
         self.assertEqual(yellowjacket.power, 2)
 
 
-    def test_MantisTrigger(self):
+    def test_mantisTrigger(self):
         mistyKnight = Card.MistyKnight()
         mantis = Card.Mantis()
         self.player1.deck = Deck.Deck(["mistyKnight", "antMan"])
@@ -162,7 +162,7 @@ class TestCards(unittest.TestCase):
         self.location.triggerOnReveal(mantis)
         self.assertEqual(len(self.player1.hand), prevHandSize + 1)
     
-    def test_MantisTrigger(self):
+    def test_mantisTrigger(self):
         mantis = Card.Mantis()
         self.player1.deck = Deck.Deck(["mistyKnight", "antMan"])
 
