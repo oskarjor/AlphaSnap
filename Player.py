@@ -32,7 +32,7 @@ class Player(object):
 
     def drawCard(self):
         cardToAdd = self.deck.removeCard(0)
-        if cardToAdd != None:
+        if cardToAdd != None and len(self.hand) < 7:
             self.hand.append(cardToAdd)
     
     def playMove(self, legalMoves: list[list[Card, Location]]) -> bool:
