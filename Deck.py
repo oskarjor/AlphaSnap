@@ -11,7 +11,7 @@ class Deck(object):
         self.cards = [FLAT_CARD_DICT[cardName]() for cardName in cardNames]
     
     def __str__(self) -> str:
-        return [str(card) for card in self.cards]
+        return str([str(card) for card in self.cards])
 
     def removeCard(self, index=0):
         if(len(self.cards) == 0):
