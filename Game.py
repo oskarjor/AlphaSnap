@@ -25,7 +25,7 @@ class Game(object):
         self.player0.drawCard()
         self.player1.drawCard()
         # TODO: should not be random, but rather based on who is currently winning
-        player0Starts = random.randint(0, 1)
+        player0Starts = self.board.playerIsStarting(player=self.player0)
         self.player0.availableEnergy = self.turn
         self.player1.availableEnergy = self.turn
         self.player0.isStarting = player0Starts == self.player0.playerIdx
@@ -123,9 +123,6 @@ if __name__ == "__main__":
         print("-" * 124)
         movesPlayed = game.playTurn()
         game.revealCards(movesPlayed)
-        for move in movesPlayed:
-            card, location, player = move
-            print(f"Player {player.playerIdx} played {card} at {location}!")
         print("-" * 124)
         print()
         game.visualizeBoard(game.board)
