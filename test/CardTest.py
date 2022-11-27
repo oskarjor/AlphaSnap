@@ -12,7 +12,7 @@ class TestCards(unittest.TestCase):
         self.player0 = Player.Player([], playerIdx=0, availableEnergy=0)
         self.player1 = Player.Player([], playerIdx=1, availableEnergy=0)
 
-    def test_Card(self):
+    def test_card(self):
         mistyKnight = Card.MistyKnight()
         self.assertEqual(mistyKnight.cost, 1)
         self.assertEqual(mistyKnight.power, 2)
