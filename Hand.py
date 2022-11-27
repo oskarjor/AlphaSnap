@@ -7,7 +7,7 @@ class Hand(object):
         self.cards = []
     
     def __str__(self) -> str:
-        return [str(card) for card in self.cards]
+        return str([str(card) for card in self.cards])
 
     def handIsFull(self):
         if len(self.cards) >= self.maxHandSize:
@@ -22,7 +22,7 @@ class Hand(object):
         self.cards.append(card)
         return True
 
-    def removeCard(self, index=0):
+    def removeCard(self, card: Card.Card):
         if(len(self.cards) == 0):
             return
-        return self.cards.pop(index)
+        return self.cards.remove(card)

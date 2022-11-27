@@ -16,7 +16,7 @@ class Game(object):
 
     def getLegalMoves(self, player: Player):
         legalMoves = []
-        for card in player.hand:
+        for card in player.hand.cards:
             for location in self.board.locations:
                 if(player.playIsLegal(card, location)):
                     legalMoves.append([card, location])
@@ -101,6 +101,7 @@ class Game(object):
 
 
         print("Player 1 (opponent):")
+        print("Hand:", player1.hand)
         print("-" * 124)
         for i in range(3, -1, -1):
             print(f"| Spot {i+1} | {str(player1Cards[0][i]).center(35)} | {str(player1Cards[1][i]).center(35)} | {str(player1Cards[2][i]).center(35)} |")
@@ -113,6 +114,7 @@ class Game(object):
             print(f"| Spot {i+1} | {str(player0Cards[0][i]).center(35)} | {str(player0Cards[1][i]).center(35)} | {str(player0Cards[2][i]).center(35)} |")
         print("-" * 124)
         print("Player 0 (you):")
+        print("Hand:", player0.hand)
         print("")
 
 
