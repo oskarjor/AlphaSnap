@@ -13,7 +13,7 @@ class Deck(object):
     def __str__(self) -> str:
         return [str(card) for card in self.cards]
 
-    def removeCard(self, index):
+    def removeCard(self, index=0):
         if(len(self.cards) == 0):
             return
         return self.cards.pop(index)
