@@ -47,7 +47,6 @@ def getFlatCardDict(CARD_DICT):
     FLAT_CARD_DICT = {}
     for _, COST_CARD_DICT in CARD_DICT.items():
         for key, val in COST_CARD_DICT.items():
-            print(key, val)
             FLAT_CARD_DICT[key] = val
     return FLAT_CARD_DICT
 

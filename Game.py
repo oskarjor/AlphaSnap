@@ -123,7 +123,6 @@ if __name__ == "__main__":
     allCardNames = [cardName for costKey in CARD_DICT.keys() for cardName in CARD_DICT[costKey]]
     cardNames0 = random.sample(allCardNames, 6)
     cardNames1 = random.sample(allCardNames, 6)
-    print(cardNames0)
     player0 = Player(cardNames=cardNames0, playerIdx=0)
     player1 = Player(cardNames=cardNames1, playerIdx=1)
     game = Game(board, player0, player1)
