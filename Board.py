@@ -1,5 +1,6 @@
 from CONSTANTS import LOCATION_DICT
 import random
+import Player
 
 class Board(object):
 
@@ -15,3 +16,31 @@ class Board(object):
         print("Selecting locations")
         for i in range(3):
             self.createLocation(i)
+
+    def playerIsWinning(self, player: Player.Player):
+        sumSelfPower = 0
+        sumOpposingPower = 0
+        wonLocations = 0
+        lostLocations = 0
+        for location in self.locations:
+            if location != None:
+                selfPower = location.getTotalPower(player.playerIdx)
+                sumSelfPower += selfPower
+                opposingPower = location.getTotalPower(1 - player.playerIdx)
+                sumOpposingPower += opposingPower
+                if(selfPower > opposingPower):
+                    wonLocations += 1
+                if(selfPower < opposingPower):
+                    lostLocations += 1
+        if(wonLocations > lostLocations):
+            return 1
+        if(wonLocations < lostLocations):
+            return -1
+        if(wonLocations == lostLocations):
+            if(sumSelfPower > sumOpposingPower):
+                return 1
+            if(sumSelfPower < sumOpposingPower):
+                return -1
+            if(sumSelfPower == sumOpposingPower):
+                return 0
+            
