@@ -9,9 +9,8 @@ class Game(object):
     
     def __init__(self, board: Board, player1: Player, player2: Player) -> None:
         self.board = board
-        self.player1 = player1
-        self.player2 = player2
-        self.player1Starts = random.randint(0, 1)
+        self.player0 = player1
+        self.player1 = player2
         self.turn = 0
     
     def startGame(self) -> None:
@@ -23,15 +22,18 @@ class Game(object):
             location.cardPlayedThisTurn = [False, False]
         
         self.turn += 1
-        self.player1Starts = random.randint(0, 1)
+        self.player0.drawCard()
+        self.player1.drawCard()
+        # TODO: should not be random, but rather based on who is currently winning
+        player0Starts = random.randint(0, 1)
+        self.player0.availableEnergy = self.turn
         self.player1.availableEnergy = self.turn
-        self.player2.availableEnergy = self.turn
-        self.player1.isStarting = self.player1Starts == self.player1.playerIdx
-        self.player2.isStarting = self.player1Starts == self.player2.playerIdx
+        self.player0.isStarting = player0Starts == self.player0.playerIdx
+        self.player1.isStarting = player0Starts == self.player1.playerIdx
 
     def getLegalMoves(self, player: Player):
         legalMoves = []
-        for card in player.deck.cards:
+        for card in player.hand:
             for location in self.board.locations:
                 if(player.playIsLegal(card, location)):
                     legalMoves.append([card, location])
@@ -40,32 +42,38 @@ class Game(object):
 
     def playTurn(self):
         self.beginTurn()
+        player0PlayQueue = []
         player1PlayQueue = []
-        player2PlayQueue = []
+        while True:
+            legalMoves = self.getLegalMoves(self.player0)
+            playedMove = self.player0.playMove(legalMoves)
+            if(playedMove == None):
+                break
+            player0PlayQueue.append(playedMove + [self.player0])
+        
         while True:
             legalMoves = self.getLegalMoves(self.player1)
             playedMove = self.player1.playMove(legalMoves)
             if(playedMove == None):
                 break
             player1PlayQueue.append(playedMove + [self.player1])
-        
-        while True:
-            legalMoves = self.getLegalMoves(self.player2)
-            playedMove = self.player2.playMove(legalMoves)
-            if(playedMove == None):
-                break
-            player2PlayQueue.append(playedMove + [self.player2])
 
         playQueue = []
-        if self.player1Starts:
-            playQueue = player1PlayQueue + player2PlayQueue
+        if self.player0.isStarting:
+            playQueue = player0PlayQueue + player1PlayQueue
         else:
-            playQueue = player2PlayQueue + player1PlayQueue
+            playQueue = player1PlayQueue + player0PlayQueue
 
         return playQueue
 
     def endGame(self):
-        pass
+        gameWinner = self.board.playerIsWinning(player0)
+        if(gameWinner == 1):
+            print("Player 0 wins!")
+        elif(gameWinner == -1):
+            print("Player 1 wins!")
+        elif(gameWinner == 0):
+            print("It's a tie!")
 
     def revealCards(self, playQueue: list[Card, Location, Player]):
         for card, location, player in playQueue:
@@ -114,6 +122,7 @@ if __name__ == "__main__":
         print(f"ROUND {i}")
         print("-" * 124)
         movesPlayed = game.playTurn()
+        game.revealCards(movesPlayed)
         for move in movesPlayed:
             card, location, player = move
             print(f"Player {player.playerIdx} played {card} at {location}!")
