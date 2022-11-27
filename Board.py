@@ -9,13 +9,22 @@ class Board(object):
 
     def createLocation(self, idx: int) -> None:
         currentLocation = random.choice(list(LOCATION_DICT.keys()))
-        print(f"Location {idx}: {currentLocation}")
+        #print(f"Location {idx}: {currentLocation}")
         self.locations[idx] = LOCATION_DICT[currentLocation](idx)
     
     def setupLocations(self) -> None:
-        print("Selecting locations")
+        #print("Selecting locations")
         for i in range(3):
             self.createLocation(i)
+
+    def playerIsStarting(self, player: Player.Player):
+        isPlayerWinning = self.playerIsWinning(player=player)
+        if(isPlayerWinning == 1):
+            return 1
+        elif(isPlayerWinning == -1):
+            return 0
+        return random.randint(0, 1)
+
 
     def playerIsWinning(self, player: Player.Player):
         sumSelfPower = 0
