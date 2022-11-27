@@ -9,9 +9,13 @@ class Card(object):
         self.atLocation = None
         self.player = None
         self.revealed = False
+        self.otherPowerSources = {}
 
     def __str__(self) -> str:
-        return f"{self.name} (C: {self.cost}, P: {self.power})"
+        return f"{self.name} (C: {self.cost}, P: {self.getPower()})"
+
+    def getPower(self):
+        return self.power + sum(self.otherPowerSources.values())
 
     def ongoing(self):
         return None
