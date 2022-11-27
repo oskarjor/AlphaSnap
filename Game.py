@@ -4,6 +4,7 @@ from Player import Player
 from Board import Board
 from Card import Card
 from Location import Location
+from CONSTANTS import CARD_DICT
 
 class Game(object):
     
@@ -12,6 +13,15 @@ class Game(object):
         self.player0 = player1
         self.player1 = player2
         self.turn = 0
+
+    def getLegalMoves(self, player: Player):
+        legalMoves = []
+        for card in player.hand:
+            for location in self.board.locations:
+                if(player.playIsLegal(card, location)):
+                    legalMoves.append([card, location])
+        legalMoves.append(None)
+        return legalMoves
     
     def startGame(self) -> None:
         self.board.setupLocations()
@@ -30,15 +40,6 @@ class Game(object):
         self.player1.availableEnergy = self.turn
         self.player0.isStarting = player0Starts == self.player0.playerIdx
         self.player1.isStarting = player0Starts == self.player1.playerIdx
-
-    def getLegalMoves(self, player: Player):
-        legalMoves = []
-        for card in player.hand:
-            for location in self.board.locations:
-                if(player.playIsLegal(card, location)):
-                    legalMoves.append([card, location])
-        legalMoves.append(None)
-        return legalMoves
 
     def playTurn(self):
         self.beginTurn()
@@ -66,6 +67,18 @@ class Game(object):
 
         return playQueue
 
+    def endTurn(self):
+        for loc in self.board.locations:
+            loc.triggerAllOngoing(self.player0.playerIdx)
+            loc.triggerAllOngoing(self.player1.playerIdx)
+
+    
+    def revealCards(self, playQueue: list[Card, Location, Player]):
+        for card, location, player in playQueue:
+            print(f"Player {player} played {card} at {location}!")
+            card.onReveal()
+            card.ongoing()
+
     def endGame(self):
         gameWinner = self.board.playerIsWinning(player0)
         if(gameWinner == 1):
@@ -74,12 +87,6 @@ class Game(object):
             print("Player 1 wins!")
         elif(gameWinner == 0):
             print("It's a tie!")
-
-    def revealCards(self, playQueue: list[Card, Location, Player]):
-        for card, location, player in playQueue:
-            print(f"Player {player} played {card} at {location}!")
-            card.onReveal()
-            card.ongoing()
 
     def visualizeBoard(self, board: Board):
         player0Cards = []
@@ -111,8 +118,10 @@ class Game(object):
 
 if __name__ == "__main__":
     board = Board()
-    cardNames0 = ["mistyKnight", "cyclops"]
-    cardNames1 = ["shocker", "abomination"]
+    allCardNames = [cardName for costKey in CARD_DICT.keys() for cardName in CARD_DICT[costKey]]
+    cardNames0 = random.sample(allCardNames, 6)
+    cardNames1 = random.sample(allCardNames, 6)
+    print(cardNames0)
     player0 = Player(cardNames=cardNames0, playerIdx=0)
     player1 = Player(cardNames=cardNames1, playerIdx=1)
     game = Game(board, player0, player1)
@@ -123,6 +132,7 @@ if __name__ == "__main__":
         print("-" * 124)
         movesPlayed = game.playTurn()
         game.revealCards(movesPlayed)
+        game.endTurn()
         print("-" * 124)
         print()
         game.visualizeBoard(game.board)
