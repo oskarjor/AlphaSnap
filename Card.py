@@ -42,7 +42,7 @@ class PredictCard(Card):
         super().__init__(cost, power, name)
 
     def onReveal(self):
-        self.revealed = True
+        super().onReveal()
         if(self.atLocation.cardPlayedThisTurn[1 - self.player.playerIdx]):
             self.predFunc(*self.args)
 
@@ -52,7 +52,9 @@ class PredictCardPowerGain(Card):
         self.predPowerGain = predPowerGain
         super().__init__(cost, power, name)
 
+
     def onReveal(self):
+        super().onReveal()
         self.revealed = True
         if(self.atLocation.cardPlayedThisTurn[1 - self.player.playerIdx]):
             self.power += self.predPowerGain
@@ -72,9 +74,11 @@ class Yellowjacket(Card):
         super().__init__(cost, power, name)
 
     def onReveal(self):
+        super().onReveal()
         revealedCardsAtLocation = self.atLocation.getRevealedCards(self.player.playerIdx)
         for card in revealedCardsAtLocation:
-            card.power -= 1
+            if card != self:
+                card.power -= 1
 
 ### 1-cost cards
 #
@@ -120,7 +124,7 @@ class Elektra(Card):
         super().__init__(cost, power, name)
 
     def onReveal(self):
-        self.revealed = True
+        super().onReveal()
         opposingOneCostCards = []
         for card in self.atLocation.getRevealedCards(1 - self.player.playerIdx):
             if card.cost == 1:
