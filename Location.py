@@ -40,7 +40,7 @@ class Location(object):
         self.triggerAllOngoing(playerIdx)
     
     def getTotalPower(self, playerIdx: int):
-        return sum([card.power for card in self.cards[playerIdx]])
+        return sum([card.power for card in self.getRevealedCards(playerIdx)])
 
     def getCards(self, playerIdx: int):
         return self.cards[playerIdx]
