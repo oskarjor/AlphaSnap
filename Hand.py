@@ -9,8 +9,11 @@ class Hand(object):
     def __str__(self) -> str:
         return str([str(card) for card in self.cards])
 
+    def getNumCards(self):
+        return len(self.cards)
+
     def handIsFull(self):
-        if len(self.cards) >= self.maxHandSize:
+        if self.getNumCards() >= self.maxHandSize:
             return True
         return False
 
