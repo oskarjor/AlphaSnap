@@ -31,7 +31,9 @@ class Player(object):
         return move
 
     def drawCard(self):
-        self.hand.append(self.deck.pop(0))
+        cardToAdd = self.deck.removeCard(0)
+        if cardToAdd != None:
+            self.hand.append(cardToAdd)
     
     def playMove(self, legalMoves: list[list[Card, Location]]) -> bool:
         move = self.selectMove(legalMoves)
@@ -41,6 +43,7 @@ class Player(object):
         if(not self.playIsLegal(card, location)):
             print("This play is illegal")
         location.addCard(card, self)
+        self.hand.remove(card)
         self.availableEnergy -= card.cost
         return move
         
