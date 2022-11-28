@@ -1,4 +1,4 @@
-from CONSTANTS import LOCATION_DICT
+import utils.LOCATION_CONSTANTS
 import random
 import Player
 
@@ -7,16 +7,15 @@ class Board(object):
     def __init__(self) -> None:
         self.locations = [None, None, None]
 
-    def createLocation(self, idx: int) -> None:
-        currentLocation = random.choice(list(LOCATION_DICT.keys()))
+    def createLocation(self, idx: int, locationName: str) -> None:
         #print(f"Location {idx}: {currentLocation}")
-        self.locations[idx] = LOCATION_DICT[currentLocation](idx)
+        self.locations[idx] = utils.LOCATION_CONSTANTS.LOCATION_DICT[locationName](idx)
     
     # TODO: the 3 locations should (to my knowledge) be distinct
-    def setupLocations(self) -> None:
+    def setupLocations(self, locations: list[str]) -> None:
         #print("Selecting locations")
-        for i in range(3):
-            self.createLocation(i)
+        for i, locName in enumerate(locations):
+            self.createLocation(i, locName)
 
     def playerIsStarting(self, player: Player.Player):
         isPlayerWinning = self.playerIsWinning(player=player)
