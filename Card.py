@@ -173,11 +173,11 @@ class Groot(PredictCardPowerGain):
         super().__init__(cost, power, name, predPowerGain)
 
 
-### 4-cost cards
+### 5-cost cards
 #
 #
 
-class Abomination(Card):
+class TheThing(Card):
 
-    def __init__(self, cost=4, power=6, name="Abomination"):
+    def __init__(self, cost=4, power=6, name="The Thing"):
         super().__init__(cost, power, name)

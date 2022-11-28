@@ -28,9 +28,9 @@ CARD_DICT = {
         "groot": Card.Groot, 
     }, 
 
-    "4-cost": 
+    "5-cost": 
     {
-        "abomination": Card.Abomination, 
+        "theThing": Card.TheThing, 
     }, 
 
 }

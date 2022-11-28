@@ -110,19 +110,19 @@ class TestCards(unittest.TestCase):
 
     def test_elektra(self):
         mistyKnight = Card.MistyKnight()
-        abomination = Card.Abomination()
+        theThing = Card.TheThing()
         elektra = Card.Elektra()
 
         # when cards are not revealed, no cards are removed
         self.location.addCard(mistyKnight, self.player0)
-        self.location.addCard(abomination, self.player0)
+        self.location.addCard(theThing, self.player0)
         self.location.addCard(elektra, self.player1)
         self.assertEqual(self.location.triggerOnReveal(elektra), None)
         self.assertEqual(self.location.getAmountOfCards(self.player0.playerIdx), 2)
 
         # reveal the two opposing cards, make sure misty knight is removed
         self.location.triggerOnReveal(mistyKnight)
-        self.location.triggerOnReveal(abomination)
+        self.location.triggerOnReveal(theThing)
         removedCard = self.location.triggerOnReveal(elektra)
         self.assertEqual(removedCard, mistyKnight)
         self.assertEqual(self.location.getAmountOfCards(self.player0.playerIdx), 1)

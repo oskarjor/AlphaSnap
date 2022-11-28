@@ -10,4 +10,4 @@ TURN_STAGES = {
     "AFTER_TURN": 2, 
 }
 
-SAMPLE_DECK = ["wasp", "mistyKnight", "shocker", "starLord", "cyclops", "groot", "abomination"]
+SAMPLE_DECK = ["wasp", "mistyKnight", "shocker", "starLord", "cyclops", "groot", "theThing"]
