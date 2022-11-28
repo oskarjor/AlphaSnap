@@ -1,8 +1,11 @@
 import unittest
+import random
 
 import Player
 import Board
 import Location
+
+import utils.LOCATION_CONSTANTS
 
 class TestBoard(unittest.TestCase):
 
@@ -16,7 +19,9 @@ class TestBoard(unittest.TestCase):
             self.assertEqual(loc, None)
         self.assertEqual(len(self.board.locations), 3)
 
-        self.board.setupLocations()
+        locations = random.sample(utils.LOCATION_CONSTANTS.LOCATION_DICT.keys(), 3)
+
+        self.board.setupLocations(locations)
 
         for loc in self.board.locations:
             self.assertNotEqual(loc, None)
