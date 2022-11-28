@@ -1,15 +1,21 @@
-from CONSTANTS import FLAT_CARD_DICT
+from __future__ import annotations
+
 import random
-import Card
+from typing import TYPE_CHECKING
+
+import utils.CARD_CONSTANTS
+
+if TYPE_CHECKING:
+    import Card
 
 class Deck(object):
     def __init__(self, cardNames: list[str]) -> None:
         if(len(cardNames) != len(set(cardNames))):
             raise ValueError("Duplicate cards not allowed")
         for cardName in cardNames:
-            if(cardName not in FLAT_CARD_DICT.keys()):
+            if(cardName not in utils.CARD_CONSTANTS.FLAT_CARD_DICT.keys()):
                 raise ValueError("Invalid card name")
-        self.cards = [FLAT_CARD_DICT[cardName]() for cardName in cardNames]
+        self.cards = [utils.CARD_CONSTANTS.FLAT_CARD_DICT[cardName]() for cardName in cardNames]
     
     def __str__(self) -> str:
         return str([str(card) for card in self.cards])

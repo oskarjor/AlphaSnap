@@ -1,5 +1,14 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from Card import Card
-# import Player
+
+if TYPE_CHECKING:
+    import Game
+
+import utils.GLOBAL_CONSTANTS
+
 
 class Location(object):
 
@@ -12,12 +21,12 @@ class Location(object):
         self.ongoinEnabled = True
         self.onRevealEnabled = True
         self.cardPlayedThisTurn = [False, False]
-        self.otherPowerSources = []
+        self.otherPowerSources = {}
 
     def __str__(self) -> str:
         return f"{self.name} ({self.idx})"
 
-    def locationAbility(self):
+    def locationAbility(self, game: Game.Game = None):
         return None
     
     def addCard(self, card: Card, player):
@@ -45,7 +54,7 @@ class Location(object):
         self.triggerAllOngoing(playerIdx)
     
     def getTotalPower(self, playerIdx: int):
-        return sum([card.getPower() for card in self.getRevealedCards(playerIdx)])
+        return sum([card.getPower() for card in self.getRevealedCards(playerIdx)]) + sum(self.otherPowerSources.values())
 
     def getCards(self, playerIdx: int):
         return self.cards[playerIdx]
@@ -66,12 +75,28 @@ class Ruins(Location):
     def __init__(self, idx, name= "Ruins", cardSpaces=[4, 4], desc="A ruined land") -> None:
         super().__init__(name, idx, cardSpaces, desc)
 
+class Asgard(Location):
+
+    def __init__(self, idx: int, name="Asgard", cardSpaces=[4, 4], desc="After turn 4, whoever is winning here draws 2 cards.") -> None:
+        super().__init__(idx, name, cardSpaces, desc)
+
+    def locationAbility(self, game: Game.Game):
+        super().locationAbility(game)
+        if(game.turn == 4 and game.stage == utils.GLOBAL_CONSTANTS.TURN_STAGES["AFTER_TURN"]):
+            if(game.board.playerIsWinning(game.player0)):
+                game.player0.drawCard()
+                game.player0.drawCard()
+            if(game.board.playerIsWinning(game.player1)):
+                game.player1.drawCard()
+                game.player1.drawCard()
+
 class Atlantis(Location):
 
     def __init__(self, idx, name="Atlantis", cardSpaces=[4, 4], desc="If you only have one card here, it has +5 Power") -> None:
         super().__init__(idx, name, cardSpaces, desc)
 
-    def locationAbility(self):
+    def locationAbility(self, game: Game.Game = None):
+        super().locationAbility(game)
         for i in range(2):
             if(len(self.cards[i]) == 1):
                 self.cards[i][0].otherPowerSources[self] = 5

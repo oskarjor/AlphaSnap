@@ -1,17 +1,20 @@
+from __future__ import annotations
+
 import random
+from typing import TYPE_CHECKING
 
-from CONSTANTS import CARD_DICT, DECKSIZE
-
-from Card import Card
-from Location import Location
-from Deck import Deck
+import Deck
 import Hand
+
+if TYPE_CHECKING:
+    import Location
+    import Card
 
 class Player(object):
     
     def __init__(self, cardNames: list[str], playerIdx: int, availableEnergy: int = 0) -> None:
         self.cardNames = cardNames
-        self.deck = Deck(cardNames)
+        self.deck = Deck.Deck(cardNames)
         self.hand = Hand.Hand()
         self.isStarting = None
         self.availableEnergy = availableEnergy
@@ -20,14 +23,14 @@ class Player(object):
     def __str__(self) -> str:
         return str(self.playerIdx)
 
-    def playIsLegal(self, card: Card, location: Location) -> bool:
+    def playIsLegal(self, card: Card.Card, location: Location.Location) -> bool:
         if(not location.getPlayable(playerIdx=self.playerIdx)):
             return False
         if(card.cost > self.availableEnergy):
             return False
         return True
     
-    def selectMove(self, legalMoves: list[list[Card, Location]]) -> list[Card, Location]:
+    def selectMove(self, legalMoves: list[list[Card.Card, Location.Location]]) -> list[Card.Card, Location.Location]:
         move = random.choice(legalMoves)
         return move
 
@@ -39,7 +42,7 @@ class Player(object):
         self.hand.addCard(self.deck.removeCard())
         return True
     
-    def playMove(self, legalMoves: list[list[Card, Location]]) -> bool:
+    def playMove(self, legalMoves: list[list[Card.Card, Location.Location]]) -> bool:
         move = self.selectMove(legalMoves)
         if(move == None):
             return None

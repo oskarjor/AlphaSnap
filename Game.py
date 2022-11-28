@@ -1,20 +1,22 @@
 import random
 
-from Player import Player
+import Player
 from Board import Board
 from Card import Card
 from Location import Location
-from CONSTANTS import CARD_DICT
+import utils.GLOBAL_CONSTANTS
+import utils.CARD_CONSTANTS
 
 class Game(object):
     
-    def __init__(self, board: Board, player1: Player, player2: Player) -> None:
+    def __init__(self, board: Board, player0: Player.Player, player1: Player.Player) -> None:
         self.board = board
-        self.player0 = player1
-        self.player1 = player2
+        self.player0 = player0
+        self.player1 = player1
         self.turn = 0
+        self.stage = -1
 
-    def getLegalMoves(self, player: Player):
+    def getLegalMoves(self, player: Player.Player):
         legalMoves = []
         for card in player.hand.cards:
             for location in self.board.locations:
@@ -22,27 +24,33 @@ class Game(object):
                     legalMoves.append([card, location])
         legalMoves.append(None)
         return legalMoves
+
+    def updateTurn(self, turn):
+        self.turn = turn
+        self.player0.availableEnergy = self.turn
+        self.player1.availableEnergy = self.turn
     
     def startGame(self) -> None:
         self.board.setupLocations()
 
     def beginTurn(self):
-        # reset all information stored from previous turn
+        self.updateTurn(self.turn + 1)
+        self.stage = utils.GLOBAL_CONSTANTS.TURN_STAGES["BEFORE_TURN"]
+        # reset all information stored from previous turn and update turn
+
         for location in self.board.locations:
             location.cardPlayedThisTurn = [False, False]
+            location.turn = self.turn
         
-        self.turn += 1
         self.player0.drawCard()
         self.player1.drawCard()
         # TODO: should not be random, but rather based on who is currently winning
         player0Starts = self.board.playerIsStarting(player=self.player0)
-        self.player0.availableEnergy = self.turn
-        self.player1.availableEnergy = self.turn
         self.player0.isStarting = player0Starts == self.player0.playerIdx
         self.player1.isStarting = player0Starts == self.player1.playerIdx
 
     def playTurn(self):
-        self.beginTurn()
+        self.stage = utils.GLOBAL_CONSTANTS.TURN_STAGES["DURING_TURN"]
         player0PlayQueue = []
         player1PlayQueue = []
         while True:
@@ -68,12 +76,13 @@ class Game(object):
         return playQueue
 
     def endTurn(self):
+        self.stage = utils.GLOBAL_CONSTANTS.TURN_STAGES["AFTER_TURN"]
         for loc in self.board.locations:
             loc.triggerAllOngoing(self.player0.playerIdx)
             loc.triggerAllOngoing(self.player1.playerIdx)
 
     
-    def revealCards(self, playQueue: list[Card, Location, Player]):
+    def revealCards(self, playQueue: list[Card, Location, Player.Player]):
         for card, location, player in playQueue:
             print(f"Player {player} played {card} at {location}!")
             card.onReveal()
@@ -120,17 +129,18 @@ class Game(object):
 
 if __name__ == "__main__":
     board = Board()
-    allCardNames = [cardName for costKey in CARD_DICT.keys() for cardName in CARD_DICT[costKey]]
+    allCardNames = [cardName for costKey in utils.CARD_CONSTANTS.CARD_DICT.keys() for cardName in utils.CARD_CONSTANTS.CARD_DICT[costKey]]
     cardNames0 = random.sample(allCardNames, 6)
     cardNames1 = random.sample(allCardNames, 6)
-    player0 = Player(cardNames=cardNames0, playerIdx=0)
-    player1 = Player(cardNames=cardNames1, playerIdx=1)
+    player0 = Player.Player(cardNames=cardNames0, playerIdx=0)
+    player1 = Player.Player(cardNames=cardNames1, playerIdx=1)
     game = Game(board, player0, player1)
     game.startGame()
     for i in range(1, 7):
         print("-" * 124)
         print(f"ROUND {i}")
         print("-" * 124)
+        game.beginTurn()
         movesPlayed = game.playTurn()
         game.revealCards(movesPlayed)
         game.endTurn()
