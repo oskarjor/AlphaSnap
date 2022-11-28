@@ -6,6 +6,7 @@ from Card import Card
 from Location import Location
 import utils.GLOBAL_CONSTANTS
 import utils.CARD_CONSTANTS
+import utils.LOCATION_CONSTANTS
 
 class Game(object):
     
@@ -29,13 +30,19 @@ class Game(object):
         self.turn = turn
         self.player0.availableEnergy = self.turn
         self.player1.availableEnergy = self.turn
+
+    def triggerAllLocationAbilities(self):
+        for loc in self.board.locations:
+            loc.locationAbility(self)
     
     def startGame(self) -> None:
-        self.board.setupLocations()
+        locations = cardNames0 = random.sample(utils.LOCATION_CONSTANTS.LOCATION_DICT.keys(), 3)
+        self.board.setupLocations(locations=locations)
 
     def beginTurn(self):
         self.updateTurn(self.turn + 1)
         self.stage = utils.GLOBAL_CONSTANTS.TURN_STAGES["BEFORE_TURN"]
+        self.triggerAllLocationAbilities()
         # reset all information stored from previous turn and update turn
 
         for location in self.board.locations:
@@ -51,6 +58,7 @@ class Game(object):
 
     def playTurn(self):
         self.stage = utils.GLOBAL_CONSTANTS.TURN_STAGES["DURING_TURN"]
+        self.triggerAllLocationAbilities()
         player0PlayQueue = []
         player1PlayQueue = []
         while True:
@@ -77,6 +85,7 @@ class Game(object):
 
     def endTurn(self):
         self.stage = utils.GLOBAL_CONSTANTS.TURN_STAGES["AFTER_TURN"]
+        self.triggerAllLocationAbilities()
         for loc in self.board.locations:
             loc.triggerAllOngoing(self.player0.playerIdx)
             loc.triggerAllOngoing(self.player1.playerIdx)
@@ -129,9 +138,8 @@ class Game(object):
 
 if __name__ == "__main__":
     board = Board()
-    allCardNames = [cardName for costKey in utils.CARD_CONSTANTS.CARD_DICT.keys() for cardName in utils.CARD_CONSTANTS.CARD_DICT[costKey]]
-    cardNames0 = random.sample(allCardNames, 6)
-    cardNames1 = random.sample(allCardNames, 6)
+    cardNames0 = random.sample(utils.CARD_CONSTANTS.FLAT_CARD_DICT.keys(), 6)
+    cardNames1 = random.sample(utils.CARD_CONSTANTS.FLAT_CARD_DICT.keys(), 6)
     player0 = Player.Player(cardNames=cardNames0, playerIdx=0)
     player1 = Player.Player(cardNames=cardNames1, playerIdx=1)
     game = Game(board, player0, player1)
