@@ -6,6 +6,7 @@ from Card import Card
 
 if TYPE_CHECKING:
     import Game
+    import Player
 
 import utils.GLOBAL_CONSTANTS
 
@@ -70,6 +71,17 @@ class Location(object):
             return True
         return False
 
+    def playerIsWinning(self, player: Player.Player):
+        selfPower = self.getTotalPower(playerIdx=player.playerIdx)
+        opposingPower = self.getTotalPower(playerIdx=(1 - player.playerIdx))
+        if(selfPower > opposingPower):
+            return 1
+        if(selfPower == opposingPower):
+            return 0
+        if(selfPower < opposingPower):
+            return -1
+
+
 class Ruins(Location):
 
     def __init__(self, idx, name= "Ruins", cardSpaces=[4, 4], desc="A ruined land") -> None:
@@ -83,10 +95,12 @@ class Asgard(Location):
     def locationAbility(self, game: Game.Game):
         super().locationAbility(game)
         if(game.turn == 4 and game.stage == utils.GLOBAL_CONSTANTS.TURN_STAGES["AFTER_TURN"]):
-            if(game.board.playerIsWinning(game.player0)):
+            if(self.playerIsWinning(game.player0) == 1):
+                print("Asgard: player0 drew 2 cards!")
                 game.player0.drawCard()
                 game.player0.drawCard()
-            if(game.board.playerIsWinning(game.player1)):
+            if(self.playerIsWinning(game.player1) == 1):
+                print("Asgard: player1 drew 2 cards!")
                 game.player1.drawCard()
                 game.player1.drawCard()
 
@@ -97,9 +111,14 @@ class Atlantis(Location):
 
     def locationAbility(self, game: Game.Game = None):
         super().locationAbility(game)
-        for i in range(2):
+        for i in [game.player0.playerIdx, game.player1.playerIdx]:
             if(len(self.cards[i]) == 1):
+                if(self in self.cards[i][0].otherPowerSources.keys()):
+                    continue
+                print(f"Atlantis: {self.cards[i][0]} gained power")
                 self.cards[i][0].otherPowerSources[self] = 5
             else:
                 for card in self.cards[i]:
-                    card.otherPowerSources.pop(self, None)
+                    cardPopped = card.otherPowerSources.pop(self, None)
+                    if(cardPopped != None):
+                        print(f"Atlantis: {self.cards[i][0]} lost bonus power")
