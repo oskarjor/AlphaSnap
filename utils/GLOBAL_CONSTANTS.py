@@ -7,7 +7,7 @@ NUM_LOCATIONS = 3
 TURN_STAGES = {
     "BEFORE_TURN": 0, 
     "DURING_TURN": 1, 
-    "END_OF_TURN": 2, 
+    "AFTER_TURN": 2, 
 }
 
 SAMPLE_DECK = ["wasp", "mistyKnight", "shocker", "starLord", "cyclops", "groot", "abomination"]
