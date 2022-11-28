@@ -8,12 +8,10 @@ class Board(object):
         self.locations = [None, None, None]
 
     def createLocation(self, idx: int, locationName: str) -> None:
-        #print(f"Location {idx}: {currentLocation}")
+        print(f"Location {idx}: {locationName}")
         self.locations[idx] = utils.LOCATION_CONSTANTS.LOCATION_DICT[locationName](idx)
     
-    # TODO: the 3 locations should (to my knowledge) be distinct
     def setupLocations(self, locations: list[str]) -> None:
-        #print("Selecting locations")
         for i, locName in enumerate(locations):
             self.createLocation(i, locName)
 
