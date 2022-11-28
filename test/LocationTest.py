@@ -3,6 +3,10 @@ import unittest
 import Card
 import Location
 import Player
+import Game
+import Board
+
+import utils.GLOBAL_CONSTANTS as GLOBAL_CONSTANTS
 
 class TestLocations(unittest.TestCase):
 
@@ -10,7 +14,7 @@ class TestLocations(unittest.TestCase):
         self.player0 = Player.Player([], playerIdx=0, availableEnergy=0)
         self.player1 = Player.Player([], playerIdx=1, availableEnergy=0)
 
-    def test_ruinsLocation(self):
+    def test_ruins(self):
         location = Location.Ruins(0)
 
         # the location starts with 0 cards
@@ -21,7 +25,7 @@ class TestLocations(unittest.TestCase):
         self.assertEqual(location.cardSpaces[0], 4)
         self.assertEqual(location.cardSpaces[1], 4)
 
-    def test_atlantisLocation(self):
+    def test_atlantis(self):
         atlantisLocation = Location.Atlantis(0)
 
         mistyKnight1 = Card.MistyKnight()
@@ -51,5 +55,19 @@ class TestLocations(unittest.TestCase):
 
         self.assertEqual(atlantisLocation.getTotalPower(self.player0.playerIdx), 2+5)
         self.assertEqual(atlantisLocation.getTotalPower(self.player1.playerIdx), 2+2)
+
+    def test_asgard(self):
+        initalDeckCards = GLOBAL_CONSTANTS.SAMPLE_DECK
+        initalDeckSize = len(initalDeckCards)
+        board = Board.Board()
+        player0 = Player.Player(initalDeckCards, 0)
+        player1 = Player.Player(initalDeckCards, 0)
+        game = Game.Game(board, player0, player1)
+        game.updateTurn(4)
+
+        for i in range(3):
+            self.assertEqual(game.board.locations[i], None)
+
+        game.board.setupLocations(["ruins", "ruins", "asgard"])
 
         
