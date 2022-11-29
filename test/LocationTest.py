@@ -36,9 +36,9 @@ class TestLocations(unittest.TestCase):
         atlantisLocation.addCard(mistyKnight1, self.player0)
         atlantisLocation.addCard(mistyKnight2, self.player0)
         atlantisLocation.addCard(opposingMistyKnight1, self.player1)
-        atlantisLocation.triggerOnReveal(mistyKnight1)
-        atlantisLocation.triggerOnReveal(mistyKnight2)
-        atlantisLocation.triggerOnReveal(opposingMistyKnight1)
+        atlantisLocation.triggerOnReveal(mistyKnight1, None)
+        atlantisLocation.triggerOnReveal(mistyKnight2, None)
+        atlantisLocation.triggerOnReveal(opposingMistyKnight1, None)
 
         self.assertEqual(atlantisLocation.getTotalPower(self.player0.playerIdx), 2+2)
         self.assertEqual(atlantisLocation.getTotalPower(self.player1.playerIdx), 2)
@@ -50,7 +50,7 @@ class TestLocations(unittest.TestCase):
 
         atlantisLocation.removeCard(mistyKnight1, self.player0.playerIdx)
         atlantisLocation.addCard(opposingMistyKnight2, self.player1)
-        atlantisLocation.triggerOnReveal(opposingMistyKnight2)
+        atlantisLocation.triggerOnReveal(opposingMistyKnight2, None)
         atlantisLocation.locationAbility()
 
         self.assertEqual(atlantisLocation.getTotalPower(self.player0.playerIdx), 2+5)
