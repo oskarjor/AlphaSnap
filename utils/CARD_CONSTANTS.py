@@ -1,5 +1,46 @@
 import Card
 
+NONCOLLECTIBLE_CARD_DICT = {
+
+    "0-cost": 
+    {
+        
+    }, 
+
+    "1-cost": 
+    {
+
+    }, 
+
+
+    "2-cost": 
+    {
+
+    },
+
+    "3-cost": 
+    {
+
+    },
+
+    "4-cost": 
+    {
+
+    }, 
+
+    "5-cost": 
+    {
+
+    },
+
+
+    "6-cost": 
+    {
+
+    },
+
+}
+
 CARD_DICT = {
 
     "0-cost": 
@@ -45,3 +86,4 @@ def getFlatCardDict(CARD_DICT):
 
 
 FLAT_CARD_DICT = getFlatCardDict(CARD_DICT)
+FLAT_NONCOLLECTIBLE_CARD_DICT = getFlatCardDict(NONCOLLECTIBLE_CARD_DICT)
