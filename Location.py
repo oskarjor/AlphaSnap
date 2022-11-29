@@ -39,20 +39,25 @@ class Location(object):
         card.player = player
         self.cardPlayedThisTurn[playerIdx] = True
 
-    def triggerAllOngoing(self, playerIdx: int):
+    def triggerAllOngoing(self, playerIdx: int, game: Game.Game):
         if(self.ongoinEnabled):
             for card in self.cards[playerIdx]:
-                card.ongoing()
+                card.ongoing(game)
 
 
-    def triggerOnReveal(self, card: Card):
+    def triggerOnReveal(self, card: Card, game: Game.Game):
         if(self.onRevealEnabled):
-            return card.onReveal()
+            return card.onReveal(game)
+
+
+    def destroyCard(self, card: Card, player: Player.Player, game: Game.Game):
+        card.onDestroy(game)
+        self.removeCard(card, playerIdx=player.playerIdx)
 
 
     def removeCard(self, card: Card, playerIdx: int):
         self.cards[playerIdx].remove(card)
-        self.triggerAllOngoing(playerIdx)
+        #self.triggerAllOngoing(playerIdx, game)
     
     def getTotalPower(self, playerIdx: int):
         return sum([card.getPower() for card in self.getRevealedCards(playerIdx)]) + sum(self.otherPowerSources.values())
@@ -96,11 +101,13 @@ class Asgard(Location):
         super().locationAbility(game)
         if(game.turn == 4 and game.stage == utils.GLOBAL_CONSTANTS.TURN_STAGES["AFTER_TURN"]):
             if(self.playerIsWinning(game.player0) == 1):
-                print("Asgard: player0 drew 2 cards!")
+                if(utils.GLOBAL_CONSTANTS.VERBOSE  > 0):
+                    print("Asgard: player0 drew 2 cards!")
                 game.player0.drawCard()
                 game.player0.drawCard()
             if(self.playerIsWinning(game.player1) == 1):
-                print("Asgard: player1 drew 2 cards!")
+                if(utils.GLOBAL_CONSTANTS.VERBOSE > 0):
+                    print("Asgard: player1 drew 2 cards!")
                 game.player1.drawCard()
                 game.player1.drawCard()
 
@@ -111,14 +118,16 @@ class Atlantis(Location):
 
     def locationAbility(self, game: Game.Game = None):
         super().locationAbility(game)
-        for i in [game.player0.playerIdx, game.player1.playerIdx]:
+        for i in [0, 1]:
             if(len(self.cards[i]) == 1):
                 if(self in self.cards[i][0].otherPowerSources.keys()):
                     continue
-                print(f"Atlantis: {self.cards[i][0]} gained power")
+                if(utils.GLOBAL_CONSTANTS.VERBOSE > 0):
+                    print(f"Atlantis: {self.cards[i][0]} gained power")
                 self.cards[i][0].otherPowerSources[self] = 5
             else:
                 for card in self.cards[i]:
                     cardPopped = card.otherPowerSources.pop(self, None)
                     if(cardPopped != None):
-                        print(f"Atlantis: {self.cards[i][0]} lost bonus power")
+                        if(utils.GLOBAL_CONSTANTS.VERBOSE > 0):
+                            print(f"Atlantis: {self.cards[i][0]} lost bonus power")
