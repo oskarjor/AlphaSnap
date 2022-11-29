@@ -9,7 +9,7 @@ class Board(object):
         self.locations = [None, None, None]
 
     def createLocation(self, idx: int, locationName: str) -> None:
-        if(utils.GLOBAL_CONSTANTS > 1):
+        if(utils.GLOBAL_CONSTANTS.VERBOSE > 1):
             print(f"Location {idx}: {locationName}")
         self.locations[idx] = utils.LOCATION_CONSTANTS.LOCATION_DICT[locationName](idx)
     
