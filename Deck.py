@@ -29,9 +29,16 @@ class Deck(object):
     def deckIsEmpty(self):
         return self.getNumCards() == 0
 
-    def removeCard(self, index=0):
+    def removeCard(self, targetCard: Card.Card):
+        for i, card in enumerate(self.cards):
+            if card == targetCard:
+                return self.removeCardByIndex(i)
+
+    def removeCardByIndex(self, index=0):
         if(self.deckIsEmpty()):
             raise IndexError("Deck is empty")
+        if(index >= len(self.cards)):
+            raise IndexError("Index out of range")
         return self.cards.pop(index)
 
     def shuffle(self):

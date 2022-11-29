@@ -39,7 +39,7 @@ class Player(object):
             return False
         if(self.deck.deckIsEmpty()):
             return False
-        self.hand.addCard(self.deck.removeCard())
+        self.hand.addCard(self.deck.removeCardByIndex())
         return True
     
     def playMove(self, move: list[Card.Card, Location.Location]):

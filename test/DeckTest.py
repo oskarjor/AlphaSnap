@@ -8,14 +8,14 @@ class TestDeck(unittest.TestCase):
     def test_deck(self):
         deck = Deck.Deck(["mistyKnight", "antMan", "wasp"])
         self.assertEqual(deck.getNumCards(), 3)
-        removedCard = deck.removeCard()
+        removedCard = deck.removeCardByIndex()
         self.assertEqual(type(removedCard), Card.MistyKnight)
         self.assertEqual(deck.getNumCards(), 2)
-        secondRemovedCard = deck.removeCard(1)
+        secondRemovedCard = deck.removeCardByIndex(1)
         self.assertEqual(type(secondRemovedCard), Card.Wasp)
-        _ = deck.removeCard()
+        _ = deck.removeCardByIndex()
         with self.assertRaises(IndexError):
-            deck.removeCard()
+            deck.removeCardByIndex()
 
     def test_duplicateCards(self):
         with self.assertRaises(ValueError):
