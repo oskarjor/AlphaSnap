@@ -25,5 +25,5 @@ class TestBoard(unittest.TestCase):
 
         for loc in self.board.locations:
             self.assertNotEqual(loc, None)
-            self.assertIn(Location.Location, type(loc).__bases__)
+            self.assertIn(Location.Location, type(loc).mro())
         self.assertEqual(len(self.board.locations), 3)
