@@ -42,8 +42,7 @@ class Player(object):
         self.hand.addCard(self.deck.removeCard())
         return True
     
-    def playMove(self, legalMoves: list[list[Card.Card, Location.Location]]) -> bool:
-        move = self.selectMove(legalMoves)
+    def playMove(self, move: list[Card.Card, Location.Location]):
         if(move == None):
             return None
         card, location = move

@@ -63,14 +63,16 @@ class Game(object):
         player1PlayQueue = []
         while True:
             legalMoves = self.getLegalMoves(self.player0)
-            playedMove = self.player0.playMove(legalMoves)
+            moveToPlay = self.player0.selectMove(legalMoves)
+            playedMove = self.player0.playMove(moveToPlay)
             if(playedMove == None):
                 break
             player0PlayQueue.append(playedMove + [self.player0])
         
         while True:
             legalMoves = self.getLegalMoves(self.player1)
-            playedMove = self.player1.playMove(legalMoves)
+            moveToPlay = self.player1.selectMove(legalMoves)
+            playedMove = self.player1.playMove(moveToPlay)
             if(playedMove == None):
                 break
             player1PlayQueue.append(playedMove + [self.player1])
@@ -94,8 +96,8 @@ class Game(object):
     def revealCards(self, playQueue: list[Card, Location, Player.Player]):
         for card, location, player in playQueue:
             print(f"Player {player} played {card} at {location}!")
-            card.onReveal()
-            card.ongoing()
+            card.onReveal(self)
+            card.ongoing(self)
 
     def endGame(self):
         gameWinner = self.board.playerIsWinning(player0)
