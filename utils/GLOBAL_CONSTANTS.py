@@ -11,3 +11,5 @@ TURN_STAGES = {
 }
 
 SAMPLE_DECK = ["wasp", "mistyKnight", "shocker", "starLord", "cyclops", "groot", "theThing"]
+
+VERBOSE = 0

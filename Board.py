@@ -1,4 +1,5 @@
 import utils.LOCATION_CONSTANTS
+import utils.GLOBAL_CONSTANTS
 import random
 import Player
 
@@ -8,7 +9,8 @@ class Board(object):
         self.locations = [None, None, None]
 
     def createLocation(self, idx: int, locationName: str) -> None:
-        print(f"Location {idx}: {locationName}")
+        if(utils.GLOBAL_CONSTANTS > 1):
+            print(f"Location {idx}: {locationName}")
         self.locations[idx] = utils.LOCATION_CONSTANTS.LOCATION_DICT[locationName](idx)
     
     def setupLocations(self, locations: list[str]) -> None:
