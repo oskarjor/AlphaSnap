@@ -113,7 +113,7 @@ class Asgard(Location):
 
 class Atlantis(Location):
 
-    def __init__(self, idx, name="Atlantis", cardSpaces=[4, 4], desc="If you only have one card here, it has +5 Power") -> None:
+    def __init__(self, idx: int, name="Atlantis", cardSpaces=[4, 4], desc="If you only have one card here, it has +5 Power") -> None:
         super().__init__(idx, name, cardSpaces, desc)
 
     def locationAbility(self, game: Game.Game = None):
@@ -131,3 +131,20 @@ class Atlantis(Location):
                     if(cardPopped != None):
                         if(utils.GLOBAL_CONSTANTS.VERBOSE > 0):
                             print(f"Atlantis: {self.cards[i][0]} lost bonus power")
+
+class Attilan(Location):
+
+    def __init__(self, idx: int, name="Attilan", cardSpaces=[4, 4], desc="After turn 3, shuffle your hand into your deck. Draw 3 cards.") -> None:
+        super().__init__(idx, name, cardSpaces, desc)
+
+    def locationAbility(self, game: Game.Game = None):
+        super().locationAbility(game)
+        if(game.turn == 3 and game.stage == utils.GLOBAL_CONSTANTS.TURN_STAGES["AFTER_TURN"]):
+            for player in [game.player0, game.player1]:
+                for card in player.hand.cards:
+                    player.hand.removeCard(card)
+                    player.deck.addCard(card)
+                player.deck.shuffle()
+                for _ in range(3):
+                    player.drawCard()
+
