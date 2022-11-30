@@ -23,6 +23,10 @@ class Location(object):
         self.onRevealEnabled = True
         self.cardPlayedThisTurn = [False, False]
         self.otherPowerSources = {}
+        self.canPlayHere = True     # cards can be played here. Note that if this is false, but notLocked is True, cards can
+                                    # still be moved from and to this location.
+        self.locked = False         # location is locked. No cards can be moved from here or to here, played here
+                                    # or summoned here (Professor X effect)
 
     def __str__(self) -> str:
         return f"{self.name} ({self.idx})"
@@ -72,8 +76,9 @@ class Location(object):
         return len(self.cards[playerIdx])
 
     def getPlayable(self, playerIdx: int):
-        if self.getAmountOfCards(playerIdx) < self.cardSpaces[playerIdx]:
-            return True
+        if(self.canPlayHere and not self.locked):
+            if self.getAmountOfCards(playerIdx) < self.cardSpaces[playerIdx]:
+                return True
         return False
 
     def playerIsWinning(self, player: Player.Player):
