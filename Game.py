@@ -17,6 +17,34 @@ class Game(object):
         self.turn = 0
         self.stage = -1
 
+        # a dict of everything that has happened during the game
+        # Format 
+        # {
+        #   turn : [event_1, event_2, event_3, event_4, ...]
+        #   turn : [event_1, event_2, event_3, event_4, ...]
+        #   turn : [event_1, event_2, event_3, event_4, ...]
+        # }
+        # event_i = [eventType, ...]
+        #
+        # CARD ACTIONS: 
+        # eventType = cardPlayed                ->      turn : ["cardPlayed", player, location]
+        # eventType = cardRevealed              ->      turn : ["cardRevealed", player, location]
+        # eventType = cardMoved                 ->      turn : ["cardMoved", player, fromLocation, toLocation]
+        # eventType = cardDestroyed             ->      turn : ["cardDestroyed", player, location]
+        # 
+        # LOCATION ACTIONS: 
+        # eventType = locationRevealed          ->      turn : ["locationRevealed", location]
+        # eventType = locationAbilityTriggered  ->      turn : ["locationAbilityTriggered"]
+        # 
+        # GAME ACTIONS: 
+        # eventType = turnStart                 ->      turn : ["turnStarted"]
+        # eventType = turnEnd                   ->      turn : ["turnStarted"]
+        # eventType = gameStarted               ->      turn : ["gameStarted"]
+        # eventType = gameEnded                 ->      turn : ["gameStarted"]
+        # eventType = playerWon                 ->      turn : ["playerWon", player]
+
+        self.playHistory = {}
+
     def getLegalMoves(self, player: Player.Player):
         legalMoves = []
         for card in player.hand.cards:
