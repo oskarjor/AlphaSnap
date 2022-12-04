@@ -175,7 +175,7 @@ class TestCards(unittest.TestCase):
 
     def test_agent13(self):
         agent13 = Card.Agent13()
-        self.player0.hand = Hand.Hand(cards=[])
+        self.player0.hand = Hand.Hand()
         self.assertEqual(self.player0.hand.getNumCards(), 0)
 
         self.location.addCard(agent13, player=self.player0)
@@ -187,7 +187,7 @@ class TestCards(unittest.TestCase):
 
     def test_deadpool(self):
         deadpool1 = Card.Deadpool()
-        self.player0.hand = Hand.Hand(cards=[])
+        self.player0.hand = Hand.Hand()
         self.assertEqual(self.player0.hand.getNumCards(), 0)
 
         self.location.addCard(deadpool1, player=self.player0)

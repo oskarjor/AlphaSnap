@@ -2,9 +2,12 @@ import random
 import Card
 
 class Hand(object):
-    def __init__(self, cards: list[Card.Card] = []) -> None:
+    def __init__(self, cards: list[Card.Card] = None) -> None:
         self.maxHandSize = 7
-        self.cards = cards
+        if not cards:
+            self.cards = []
+        else:       
+            self.cards = cards
     
     def __str__(self) -> str:
         return str([str(card) for card in self.cards])
