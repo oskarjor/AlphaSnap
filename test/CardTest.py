@@ -177,7 +177,7 @@ class TestCards(unittest.TestCase):
         self.location.triggerOnReveal(mantis, None)
         self.assertEqual(len(self.player1.hand), prevHandSize + 1)
 
-    def test_mantisTrigger(self):
+    def test_mantisNotTrigger(self):
         mantis = Card.Mantis()
         self.player1.deck = Deck.Deck(["Misty Knight", "Ant-Man"])
 
