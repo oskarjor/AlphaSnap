@@ -28,15 +28,18 @@ class Card(object):
 
     def onReveal(self, game: Game.Game = None):
         self.revealed = True
+        game.addToPlayHistory(["cardRevealed", self.player, self, self.atLocation])
         return None
 
     def onDestroy(self, game: Game.Game = None):
+        game.addToPlayHistory(["cardDestroyed", self.player, self, self.atLocation])
         return None
 
     def onMove(self, game: Game.Game = None):
         return None
 
     def onDiscard(self, game: Game.Game = None):
+        game.addToPlayHistory(["cardDiscarded", self.player, self, self.atLocation])
         return None
 
     def summon(self, game: Game.Game = None):

@@ -27,23 +27,29 @@ class Game(object):
         # event_i = [eventType, ...]
         #
         # CARD ACTIONS: 
-        # eventType = cardPlayed                ->      turn : ["cardPlayed", player, location]
-        # eventType = cardRevealed              ->      turn : ["cardRevealed", player, location]
-        # eventType = cardMoved                 ->      turn : ["cardMoved", player, fromLocation, toLocation]
-        # eventType = cardDestroyed             ->      turn : ["cardDestroyed", player, location]
+        # eventType = cardPlayed                ->      turn : ["cardPlayed", player, card, location]       (check)
+        # eventType = cardRevealed              ->      turn : ["cardRevealed", player, card, location]     (check)
+        # eventType = cardMoved                 ->      turn : ["cardMoved", player, card, fromLocation, toLocation]
+        # eventType = cardDestroyed             ->      turn : ["cardDestroyed", player, card, location]
+        # eventType = cardDiscarded             ->      turn : ["cardDiscarded", player, card, location]
         # 
         # LOCATION ACTIONS: 
         # eventType = locationRevealed          ->      turn : ["locationRevealed", location]
-        # eventType = locationAbilityTriggered  ->      turn : ["locationAbilityTriggered"]
+        # eventType = locationAbilityTriggered  ->      turn : ["locationAbilityTriggered", location]
         # 
         # GAME ACTIONS: 
-        # eventType = turnStart                 ->      turn : ["turnStarted"]
-        # eventType = turnEnd                   ->      turn : ["turnStarted"]
-        # eventType = gameStarted               ->      turn : ["gameStarted"]
-        # eventType = gameEnded                 ->      turn : ["gameStarted"]
-        # eventType = playerWon                 ->      turn : ["playerWon", player]
+        # eventType = turnStart                 ->      turn : ["turnStarted"]       (check)
+        # eventType = turnEnd                   ->      turn : ["turnEnded"]         (check)
+        # eventType = gameStarted               ->      turn : ["gameStarted"]       (check)
+        # eventType = gameEnded                 ->      turn : ["gameEnded", result] (check)
 
-        self.playHistory = {}
+        self.gameHistory = {}
+
+    def addToPlayHistory(self, event: list):
+        if self.turn not in self.gameHistory.keys():
+            self.gameHistory[self.turn] = [event]
+        else:
+            self.gameHistory[self.turn].append(event)
 
     def getLegalMoves(self, player: Player.Player):
         legalMoves = []
@@ -58,13 +64,15 @@ class Game(object):
         self.turn = turn
         self.player0.availableEnergy = self.turn
         self.player1.availableEnergy = self.turn
+        self.addToPlayHistory(["turnStarted"])
 
     def triggerAllLocationAbilities(self):
         for loc in self.board.locations:
             loc.locationAbility(self)
     
     def startGame(self) -> None:
-        locations = cardNames0 = random.sample(utils.LOCATION_CONSTANTS.LOCATION_DICT.keys(), 3)
+        self.addToPlayHistory(["gameStarted"])
+        locations = random.sample(list(utils.LOCATION_CONSTANTS.LOCATION_DICT.keys()), 3)
         self.board.setupLocations(locations=locations)
 
     def beginTurn(self):
@@ -74,16 +82,17 @@ class Game(object):
         # reset all information stored from previous turn and update turn
 
         for location in self.board.locations:
+            # TODO: (soon deprecated) cardPlayedThisTurn should use playHistory
             location.cardPlayedThisTurn = [False, False]
             location.turn = self.turn
         
         self.player0.drawCard()
         self.player1.drawCard()
-        # TODO: should not be random, but rather based on who is currently winning
         player0Starts = self.board.playerIsStarting(player=self.player0)
         self.player0.isStarting = player0Starts == self.player0.playerIdx
         self.player1.isStarting = player0Starts == self.player1.playerIdx
 
+    
     def playTurn(self):
         self.stage = utils.GLOBAL_CONSTANTS.TURN_STAGES["DURING_TURN"]
         self.triggerAllLocationAbilities()
@@ -111,14 +120,20 @@ class Game(object):
         else:
             playQueue = player1PlayQueue + player0PlayQueue
 
+        for move in playQueue:
+            card, location, player = move
+            self.addToPlayHistory(["cardPlayed", player, card, location])
+
         return playQueue
 
     def endTurn(self):
         self.stage = utils.GLOBAL_CONSTANTS.TURN_STAGES["AFTER_TURN"]
         self.triggerAllLocationAbilities()
         for loc in self.board.locations:
-            loc.triggerAllOngoing(self.player0.playerIdx)
-            loc.triggerAllOngoing(self.player1.playerIdx)
+            loc.triggerAllOngoing(self.player0.playerIdx, self)
+            loc.triggerAllOngoing(self.player1.playerIdx, self)
+        self.addToPlayHistory(["turnEnded"])
+
 
     
     def revealCards(self, playQueue: list[Card, Location, Player.Player]):
@@ -130,11 +145,40 @@ class Game(object):
     def endGame(self):
         gameWinner = self.board.playerIsWinning(player0)
         if(gameWinner == 1):
+            self.addToPlayHistory(["gameEnded", player0])
             print("Player 0 wins!")
         elif(gameWinner == -1):
+            self.addToPlayHistory(["gameEnded", player1])
             print("Player 1 wins!")
         elif(gameWinner == 0):
+            self.addToPlayHistory(["gameEnded", None])
             print("It's a tie!")
+
+    def playGame(self):
+        game.startGame()
+        print("Player 0 deck: ", str(self.player0.deck))
+        print("Player 1 deck: ", str(self.player1.deck))
+        for i in range(1, 7):
+            print("-" * 124)
+            print(f"ROUND {i}")
+            print("-" * 124)
+            self.beginTurn()
+            movesPlayed = self.playTurn()
+            self.revealCards(movesPlayed)
+            self.endTurn()
+            print("-" * 124)
+            print()
+            self.visualizeBoard(self.board)
+            if(i == 6):
+                self.endGame()
+                continue
+            play_next_turn = input("Do you wish to play next turn [y/n]: ")
+            if play_next_turn.lower() == "y":
+                print("\n")
+                continue
+            elif play_next_turn.lower() == "n":
+                print("Game aborted")
+                break
 
     def visualizeBoard(self, board: Board):
         player0Cards = []
@@ -168,31 +212,13 @@ class Game(object):
 
 if __name__ == "__main__":
     board = Board()
-    cardNames0 = random.sample(utils.CARD_CONSTANTS.FLAT_CARD_DICT.keys(), 6)
-    cardNames1 = random.sample(utils.CARD_CONSTANTS.FLAT_CARD_DICT.keys(), 6)
+    cardNames0 = random.sample(list(utils.CARD_CONSTANTS.FLAT_CARD_DICT.keys()), 6)
+    cardNames1 = random.sample(list(utils.CARD_CONSTANTS.FLAT_CARD_DICT.keys()), 6)
+    print(cardNames0)
+    print(cardNames1)
     player0 = Player.Player(cardNames=cardNames0, playerIdx=0)
     player1 = Player.Player(cardNames=cardNames1, playerIdx=1)
     game = Game(board, player0, player1)
-    game.startGame()
-    for i in range(1, 7):
-        print("-" * 124)
-        print(f"ROUND {i}")
-        print("-" * 124)
-        game.beginTurn()
-        movesPlayed = game.playTurn()
-        game.revealCards(movesPlayed)
-        game.endTurn()
-        print("-" * 124)
-        print()
-        game.visualizeBoard(game.board)
-        if(i == 6):
-            game.endGame()
-            continue
-        play_next_turn = input("Do you wish to play next turn [y/n]: ")
-        if play_next_turn.lower() == "y":
-            print("\n")
-            continue
-        elif play_next_turn.lower() == "n":
-            print("Game aborted")
-            break
+    game.playGame()
+    
 
