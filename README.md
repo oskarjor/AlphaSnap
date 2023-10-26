@@ -42,6 +42,7 @@ N/A
  - [ ] Implement all locations and write tests to ensure they work
 
 **Priority:** 2
+ - [ ] Move playerIsWinning, playerIsStarting from Board to Game
 
 [^1]: Some cards/locations might prove very difficult to implement. If this is the case, ignoring the card will probably not affect the agents performance drastically if the card is not part of the current meta.
 [^2]: https://marvelsnap.io/article/7-hidden-rules-that-will-cost-you-cubes-9
