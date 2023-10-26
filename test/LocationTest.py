@@ -8,6 +8,7 @@ import Board
 
 import utils.GLOBAL_CONSTANTS as GLOBAL_CONSTANTS
 
+
 class TestLocations(unittest.TestCase):
 
     def setUp(self) -> None:
@@ -40,21 +41,27 @@ class TestLocations(unittest.TestCase):
         atlantisLocation.triggerOnReveal(mistyKnight2, None)
         atlantisLocation.triggerOnReveal(opposingMistyKnight1, None)
 
-        self.assertEqual(atlantisLocation.getTotalPower(self.player0.playerIdx), 2+2)
-        self.assertEqual(atlantisLocation.getTotalPower(self.player1.playerIdx), 2)
+        self.assertEqual(atlantisLocation.getTotalPower(
+            self.player0.playerIdx), 2+2)
+        self.assertEqual(atlantisLocation.getTotalPower(
+            self.player1.playerIdx), 2)
 
         atlantisLocation.locationAbility()
 
-        self.assertEqual(atlantisLocation.getTotalPower(self.player0.playerIdx), 2+2)
-        self.assertEqual(atlantisLocation.getTotalPower(self.player1.playerIdx), 2+5)
+        self.assertEqual(atlantisLocation.getTotalPower(
+            self.player0.playerIdx), 2+2)
+        self.assertEqual(atlantisLocation.getTotalPower(
+            self.player1.playerIdx), 2+5)
 
         atlantisLocation.removeCard(mistyKnight1, self.player0.playerIdx)
         atlantisLocation.addCard(opposingMistyKnight2, self.player1)
         atlantisLocation.triggerOnReveal(opposingMistyKnight2, None)
         atlantisLocation.locationAbility()
 
-        self.assertEqual(atlantisLocation.getTotalPower(self.player0.playerIdx), 2+5)
-        self.assertEqual(atlantisLocation.getTotalPower(self.player1.playerIdx), 2+2)
+        self.assertEqual(atlantisLocation.getTotalPower(
+            self.player0.playerIdx), 2+5)
+        self.assertEqual(atlantisLocation.getTotalPower(
+            self.player1.playerIdx), 2+2)
 
     def test_asgard(self):
         initalDeckCards = GLOBAL_CONSTANTS.SAMPLE_DECK
@@ -68,6 +75,4 @@ class TestLocations(unittest.TestCase):
         for i in range(3):
             self.assertEqual(game.board.locations[i], None)
 
-        game.board.setupLocations(["ruins", "ruins", "asgard"])
-
-        
+        game.board.setupLocations(["Ruins", "Ruins", "Asgard"])
