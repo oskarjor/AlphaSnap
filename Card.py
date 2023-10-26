@@ -83,9 +83,7 @@ class PredictCardPowerGain(Card):
         if (self.atLocation.cardPlayedThisTurn[1 - self.player.playerIdx]):
             self.power += self.predPowerGain
 
-# 0-cost cards
-#
-#
+# implemented cards
 
 
 class Wasp(Card):
@@ -106,10 +104,6 @@ class Yellowjacket(Card):
         for card in revealedCardsAtLocation:
             if card != self:
                 card.power -= 1
-
-# 1-cost cards
-#
-#
 
 
 class Mantis(PredictCard):
@@ -219,11 +213,7 @@ class Iceman(Card):
 
     def onReveal(self, game: Game.Game):
         super().onReveal(game)
-        # increase cost of opponents card by 1
-
-# 2-cost cards
-#
-#
+        # TODO: increase cost of opponents card by 1
 
 
 class Shocker(Card):
@@ -238,10 +228,6 @@ class StarLord(PredictCardPowerGain):
         super().__init__(cost, power, name, predPowerGain)
 
 
-# 3-cost cards
-#
-#
-
 class Cyclops(Card):
 
     def __init__(self, cost=3, power=4, name="Cyclops"):
@@ -254,29 +240,17 @@ class Groot(PredictCardPowerGain):
         super().__init__(cost, power, name, predPowerGain)
 
 
-# 4-cost cards
-#
-#
-
 class TheThing(Card):
 
     def __init__(self, cost=4, power=6, name="The Thing"):
         super().__init__(cost, power, name)
 
 
-# 5-cost cards
-#
-#
-
 class Abomination(Card):
 
     def __init__(self, cost=5, power=9, name="Abomination"):
         super().__init__(cost, power, name)
 
-
-# 6-cost cards
-#
-#
 
 class Hulk(Card):
 
