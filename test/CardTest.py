@@ -199,6 +199,7 @@ class TestCards(unittest.TestCase):
         self.assertIn(Card.Card, type(self.player0.hand.getCards()[0]).mro())
 
     def test_deadpool(self):
+
         deadpool1 = Card.Deadpool()
         self.player0.hand = Hand.Hand()
         self.assertEqual(self.player0.hand.getNumCards(), 0)
@@ -220,6 +221,41 @@ class TestCards(unittest.TestCase):
         self.location.triggerOnReveal(deadpool2, None)
 
         self.assertEqual(self.location.getTotalPower(0), 2)
+
+    def test_adamWarlockTrigger(self):
+        mistyKnight = Card.MistyKnight()
+        abomination = Card.Abomination()
+        adamWarlock = Card.AdamWarlock()
+        self.player0.deck = Deck.Deck(["Misty Knight", "Ant-Man"])
+
+        prevHandSize = self.player0.hand.getNumCards()
+        self.location.addCard(mistyKnight, self.player1)
+        self.location.addCard(adamWarlock, self.player0)
+        self.location.addCard(abomination, self.player0)
+        self.location.triggerOnReveal(mistyKnight, None)
+        self.location.triggerOnReveal(adamWarlock, None)
+        self.location.triggerOnReveal(abomination, None)
+
+        self.location.triggerAllOngoing(
+            playerIdx=self.player0.playerIdx, game=None)
+        newHandSize = self.player0.hand.getNumCards()
+        self.assertEqual(prevHandSize + 1, newHandSize)
+
+    def test_adamWarlockNotTrigger(self):
+        mistyKnight = Card.MistyKnight()
+        adamWarlock = Card.AdamWarlock()
+        self.player0.deck = Deck.Deck(["Misty Knight", "Ant-Man"])
+
+        prevHandSize = self.player0.hand.getNumCards()
+        self.location.addCard(mistyKnight, self.player1)
+        self.location.addCard(adamWarlock, self.player0)
+        self.location.triggerOnReveal(mistyKnight, None)
+        self.location.triggerOnReveal(adamWarlock, None)
+
+        self.location.triggerAllOngoing(
+            playerIdx=self.player0.playerIdx, game=None)
+        newHandSize = self.player0.hand.getNumCards()
+        self.assertEqual(prevHandSize, newHandSize)
 
 
 if __name__ == "__main__":
