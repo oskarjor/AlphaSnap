@@ -3,14 +3,15 @@ import random
 from typing import TYPE_CHECKING
 import Card
 
+
 class Hand(object):
     def __init__(self, cards: list[Card.Card] = None) -> None:
         self.maxHandSize = 7
         if not cards:
             self.cards = []
-        else:       
+        else:
             self.cards = cards
-    
+
     def __str__(self) -> str:
         return str([str(card) for card in self.cards])
 
@@ -33,18 +34,19 @@ class Hand(object):
     def getCards(self):
         return self.cards.copy()
 
-    def getRandomCard(self):
-        return random.choice(self.cards.copy())
+    def getRandomCard(self) -> Card.Card | None:
+        if len(self.cards) > 0:
+            return random.choice(self.cards.copy())
+        return None
 
-    def discardCard(self, card: Card.Card):
-        if(self.removeCard(card=card)):
+    def discardCard(self, card: Card.Card) -> bool:
+        if (self.removeCard(card=card)):
             card.onDiscard()
             return True
         return False
-        
 
     def removeCard(self, card: Card.Card):
-        if(len(self.cards) == 0 or card not in self.cards):
+        if (len(self.cards) == 0 or card not in self.cards):
             return False
         self.cards.remove(card)
         return True

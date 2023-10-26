@@ -5,16 +5,17 @@ from typing import TYPE_CHECKING
 
 import Card
 
+
 class Deck(object):
     def __init__(self, cardNames: list[str]) -> None:
-        if(len(cardNames) != len(set(cardNames))):
+        if (len(cardNames) != len(set(cardNames))):
             raise ValueError("Duplicate cards not allowed")
         FLAT_CARD_DICT = Card.getFlatCardDict()
         for cardName in cardNames:
-            if(cardName not in FLAT_CARD_DICT.keys()):
-                raise ValueError("Invalid card name")
+            if (cardName not in FLAT_CARD_DICT.keys()):
+                raise ValueError("Invalid card name:", cardName)
         self.cards = [FLAT_CARD_DICT[cardName]() for cardName in cardNames]
-    
+
     def __str__(self) -> str:
         return str([str(card) for card in self.cards])
 
@@ -33,9 +34,9 @@ class Deck(object):
                 return self.removeCardByIndex(i)
 
     def removeCardByIndex(self, index=0):
-        if(self.deckIsEmpty()):
+        if (self.deckIsEmpty()):
             raise IndexError("Deck is empty")
-        if(index >= len(self.cards)):
+        if (index >= len(self.cards)):
             raise IndexError("Index out of range")
         return self.cards.pop(index)
 

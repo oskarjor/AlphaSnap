@@ -1,10 +1,12 @@
-import utils.LOCATION_CONSTANTS
 import utils.GLOBAL_CONSTANTS
 import random
+import Location
 
+import Player
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    import Player
+    pass
+
 
 class Board(object):
 
@@ -12,24 +14,25 @@ class Board(object):
         self.locations = [None, None, None]
 
     def createLocation(self, idx: int, locationName: str) -> None:
-        if(utils.GLOBAL_CONSTANTS.VERBOSE > 1):
+        if (utils.GLOBAL_CONSTANTS.VERBOSE > 1):
             print(f"Location {idx}: {locationName}")
-        self.locations[idx] = utils.LOCATION_CONSTANTS.LOCATION_DICT[locationName](idx)
-    
+        LOCATION_DICT = Location.getFlatLocationDict()
+        self.locations[idx] = LOCATION_DICT[locationName](idx)
+
     def setupLocations(self, locations: list[str] = None) -> None:
         if locations == None:
-            locations = random.sample(list(utils.LOCATION_CONSTANTS.LOCATION_DICT.keys()), 3)
+            LOCATION_DICT = Location.getFlatLocationDict()
+            locations = random.sample(list(LOCATION_DICT.keys()), 3)
         for i, locName in enumerate(locations):
             self.createLocation(i, locName)
 
     def playerIsStarting(self, player: Player.Player):
         isPlayerWinning = self.playerIsWinning(player=player)
-        if(isPlayerWinning == 1):
+        if (isPlayerWinning == 1):
             return 1
-        elif(isPlayerWinning == -1):
+        elif (isPlayerWinning == -1):
             return 0
         return random.randint(0, 1)
-
 
     def playerIsWinning(self, player: Player.Player):
         sumSelfPower = 0
@@ -42,19 +45,18 @@ class Board(object):
                 sumSelfPower += selfPower
                 opposingPower = location.getTotalPower(1 - player.playerIdx)
                 sumOpposingPower += opposingPower
-                if(selfPower > opposingPower):
+                if (selfPower > opposingPower):
                     wonLocations += 1
-                if(selfPower < opposingPower):
+                if (selfPower < opposingPower):
                     lostLocations += 1
-        if(wonLocations > lostLocations):
+        if (wonLocations > lostLocations):
             return 1
-        if(wonLocations < lostLocations):
+        if (wonLocations < lostLocations):
             return -1
-        if(wonLocations == lostLocations):
-            if(sumSelfPower > sumOpposingPower):
+        if (wonLocations == lostLocations):
+            if (sumSelfPower > sumOpposingPower):
                 return 1
-            if(sumSelfPower < sumOpposingPower):
+            if (sumSelfPower < sumOpposingPower):
                 return -1
-            if(sumSelfPower == sumOpposingPower):
+            if (sumSelfPower == sumOpposingPower):
                 return 0
-            

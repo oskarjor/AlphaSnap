@@ -3,11 +3,12 @@ import random
 import Player
 from Board import Board
 import utils.GLOBAL_CONSTANTS
+from Card import Card
+from Location import Location
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from Card import Card
-    from Location import Location
+    pass
 
 class Game(object):
     

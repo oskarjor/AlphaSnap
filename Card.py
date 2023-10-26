@@ -7,6 +7,7 @@ from utils.utils import all_subclasses
 if TYPE_CHECKING:
     import Game
 
+
 class Card(object):
 
     def __init__(self, cost, power, name):
@@ -29,25 +30,31 @@ class Card(object):
 
     def onReveal(self, game: Game.Game = None):
         self.revealed = True
-        game.addToPlayHistory(["cardRevealed", self.player, self, self.atLocation])
+        if game != None:
+            game.addToPlayHistory(
+                ["cardRevealed", self.player, self, self.atLocation])
         return None
 
     def onDestroy(self, game: Game.Game = None):
-        game.addToPlayHistory(["cardDestroyed", self.player, self, self.atLocation])
+        if game != None:
+            game.addToPlayHistory(
+                ["cardDestroyed", self.player, self, self.atLocation])
         return None
 
     def onMove(self, game: Game.Game = None):
         return None
 
     def onDiscard(self, game: Game.Game = None):
-        game.addToPlayHistory(["cardDiscarded", self.player, self, self.atLocation])
+        if game != None:
+            game.addToPlayHistory(
+                ["cardDiscarded", self.player, self, self.atLocation])
         return None
 
     def summon(self, game: Game.Game = None):
         return None
 
 
-### Abstract (but slightly more specialized) classes
+# Abstract (but slightly more specialized) classes
 #
 #
 
@@ -60,8 +67,9 @@ class PredictCard(Card):
 
     def onReveal(self, game: Game.Game):
         super().onReveal(game)
-        if(self.atLocation.cardPlayedThisTurn[1 - self.player.playerIdx]):
+        if (self.atLocation.cardPlayedThisTurn[1 - self.player.playerIdx]):
             self.predFunc(*self.args)
+
 
 class PredictCardPowerGain(Card):
 
@@ -69,21 +77,22 @@ class PredictCardPowerGain(Card):
         self.predPowerGain = predPowerGain
         super().__init__(cost, power, name)
 
-
     def onReveal(self, game: Game.Game):
         super().onReveal(game)
         self.revealed = True
-        if(self.atLocation.cardPlayedThisTurn[1 - self.player.playerIdx]):
+        if (self.atLocation.cardPlayedThisTurn[1 - self.player.playerIdx]):
             self.power += self.predPowerGain
 
-### 0-cost cards
+# 0-cost cards
 #
 #
+
 
 class Wasp(Card):
 
     def __init__(self, cost=0, power=1, name="Wasp"):
         super().__init__(cost, power, name)
+
 
 class Yellowjacket(Card):
 
@@ -92,14 +101,16 @@ class Yellowjacket(Card):
 
     def onReveal(self, game: Game.Game):
         super().onReveal(game)
-        revealedCardsAtLocation = self.atLocation.getRevealedCards(self.player.playerIdx)
+        revealedCardsAtLocation = self.atLocation.getRevealedCards(
+            self.player.playerIdx)
         for card in revealedCardsAtLocation:
             if card != self:
                 card.power -= 1
 
-### 1-cost cards
+# 1-cost cards
 #
 #
+
 
 class Mantis(PredictCard):
 
@@ -109,11 +120,12 @@ class Mantis(PredictCard):
     def drawCard(self):
         self.player.drawCard()
 
+
 class MistyKnight(Card):
-    
+
     def __init__(self, cost=1, power=2, name="Misty Knight"):
         super().__init__(cost, power, name)
-        
+
 
 class AntMan(Card):
 
@@ -126,12 +138,12 @@ class AntMan(Card):
         locationFull = len(self.atLocation.cards[self.player.playerIdx]) == 4
 
         # trigger ongoing if location is full
-        if(locationFull and not self.ongoingTriggered):
+        if (locationFull and not self.ongoingTriggered):
             self.ongoingTriggered = True
             self.power += 3
-        
+
         # remove ongoing effect if it was active and the location is no longer full
-        if(not locationFull and self.ongoingTriggered):
+        if (not locationFull and self.ongoingTriggered):
             self.ongoingTriggered = False
             self.power -= 3
 
@@ -147,23 +159,26 @@ class Elektra(Card):
         for card in self.atLocation.getRevealedCards(1 - self.player.playerIdx):
             if card.cost == 1:
                 opposingOneCostCards.append(card)
-        
-        if(len(opposingOneCostCards) == 0):
+
+        if (len(opposingOneCostCards) == 0):
             return None
-        
+
         cardToRemove = random.choice(opposingOneCostCards)
         self.atLocation.removeCard(cardToRemove, 1 - self.player.playerIdx)
         return cardToRemove
 
+
 class Agent13(Card):
-    
+
     def __init__(self, cost=1, power=2, name="Agent 13"):
         super().__init__(cost, power, name)
 
     def onReveal(self, game: Game.Game):
         super().onReveal(game)
+        FLAT_CARD_DICT = getFlatCardDict()
         randomCard = random.choice(list(FLAT_CARD_DICT.values()))()
         self.player.hand.addCard(randomCard)
+
 
 class Blade(Card):
 
@@ -175,6 +190,7 @@ class Blade(Card):
         randomCardInHand = self.player.hand.getRandomCard()
         self.player.hand.discardCard(randomCardInHand)
 
+
 class Deadpool(Card):
 
     def __init__(self, cost=1, power=1, name="Deadpool"):
@@ -185,6 +201,7 @@ class Deadpool(Card):
         currentPower = self.getPower()
         self.player.hand.addCard(Deadpool(power=currentPower * 2))
 
+
 class HumanTorch(Card):
 
     def __init__(self, cost=1, power=2, name="Human Torch"):
@@ -193,6 +210,7 @@ class HumanTorch(Card):
     def onMove(self, game: Game.Game):
         super().onMove(game)
         self.power = self.power * 2
+
 
 class Iceman(Card):
 
@@ -203,9 +221,10 @@ class Iceman(Card):
         super().onReveal(game)
         # increase cost of opponents card by 1
 
-### 2-cost cards
+# 2-cost cards
 #
 #
+
 
 class Shocker(Card):
 
@@ -219,7 +238,7 @@ class StarLord(PredictCardPowerGain):
         super().__init__(cost, power, name, predPowerGain)
 
 
-### 3-cost cards
+# 3-cost cards
 #
 #
 
@@ -228,13 +247,14 @@ class Cyclops(Card):
     def __init__(self, cost=3, power=4, name="Cyclops"):
         super().__init__(cost, power, name)
 
+
 class Groot(PredictCardPowerGain):
 
     def __init__(self, cost=3, power=3, name="Groot", predPowerGain=3):
         super().__init__(cost, power, name, predPowerGain)
 
 
-### 4-cost cards
+# 4-cost cards
 #
 #
 
@@ -244,7 +264,7 @@ class TheThing(Card):
         super().__init__(cost, power, name)
 
 
-### 5-cost cards
+# 5-cost cards
 #
 #
 
@@ -254,7 +274,7 @@ class Abomination(Card):
         super().__init__(cost, power, name)
 
 
-### 6-cost cards
+# 6-cost cards
 #
 #
 
@@ -269,11 +289,12 @@ def getFlatCardDict():
     sub = all_subclasses(Card)
     for s in sub:
         try:
-            FLAT_CARD_DICT[s().name] = s()
+            FLAT_CARD_DICT[s().name] = s
         except:
             pass
     return FLAT_CARD_DICT
 
-FLAT_CARD_DICT = getFlatCardDict()
-# FLAT_UNPLAYABLE_CARD_DICT = getFlatCardDict(UNPLAYABLE_CARD_DICT)
 
+if __name__ == "__main__":
+    FCD = getFlatCardDict()
+    print(FCD.keys())
