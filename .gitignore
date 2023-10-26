@@ -1,6 +1,6 @@
 # ignore metadata downloaded via scraper
-./images
-./characters
+images/
+characters/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
