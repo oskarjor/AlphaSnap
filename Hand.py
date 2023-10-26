@@ -1,4 +1,6 @@
 import random
+
+from typing import TYPE_CHECKING
 import Card
 
 class Hand(object):

@@ -1,7 +1,10 @@
 import utils.LOCATION_CONSTANTS
 import utils.GLOBAL_CONSTANTS
 import random
-import Player
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    import Player
 
 class Board(object):
 
@@ -13,7 +16,9 @@ class Board(object):
             print(f"Location {idx}: {locationName}")
         self.locations[idx] = utils.LOCATION_CONSTANTS.LOCATION_DICT[locationName](idx)
     
-    def setupLocations(self, locations: list[str]) -> None:
+    def setupLocations(self, locations: list[str] = None) -> None:
+        if locations == None:
+            locations = random.sample(list(utils.LOCATION_CONSTANTS.LOCATION_DICT.keys()), 3)
         for i, locName in enumerate(locations):
             self.createLocation(i, locName)
 

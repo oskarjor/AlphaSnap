@@ -2,11 +2,12 @@ import random
 
 import Player
 from Board import Board
-from Card import Card
-from Location import Location
 import utils.GLOBAL_CONSTANTS
-import utils.CARD_CONSTANTS
-import utils.LOCATION_CONSTANTS
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from Card import Card
+    from Location import Location
 
 class Game(object):
     
@@ -72,8 +73,7 @@ class Game(object):
     
     def startGame(self) -> None:
         self.addToPlayHistory(["gameStarted"])
-        locations = random.sample(list(utils.LOCATION_CONSTANTS.LOCATION_DICT.keys()), 3)
-        self.board.setupLocations(locations=locations)
+        self.board.setupLocations()
 
     def beginTurn(self):
         self.updateTurn(self.turn + 1)
@@ -211,9 +211,11 @@ class Game(object):
 
 
 if __name__ == "__main__":
+    import Card
+    FLAT_CARD_DICT = Card.getFlatCardDict()
     board = Board()
-    cardNames0 = random.sample(list(utils.CARD_CONSTANTS.FLAT_CARD_DICT.keys()), 6)
-    cardNames1 = random.sample(list(utils.CARD_CONSTANTS.FLAT_CARD_DICT.keys()), 6)
+    cardNames0 = random.sample(list(FLAT_CARD_DICT.keys()), 6)
+    cardNames1 = random.sample(list(FLAT_CARD_DICT.keys()), 6)
     print(cardNames0)
     print(cardNames1)
     player0 = Player.Player(cardNames=cardNames0, playerIdx=0)

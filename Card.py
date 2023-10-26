@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 import random
+from utils.utils import all_subclasses
 
 if TYPE_CHECKING:
     import Game
@@ -263,95 +264,16 @@ class Hulk(Card):
         super().__init__(cost, power, name)
 
 
-###
-###
-###
-
-
-UNPLAYABLE_CARD_DICT = {
-
-    "0-cost": 
-    {
-        
-    }, 
-
-    "1-cost": 
-    {
-
-    }, 
-
-
-    "2-cost": 
-    {
-
-    },
-
-    "3-cost": 
-    {
-
-    },
-
-    "4-cost": 
-    {
-
-    }, 
-
-    "5-cost": 
-    {
-
-    },
-
-
-    "6-cost": 
-    {
-
-    },
-
-}
-
-CARD_DICT = {
-
-    "0-cost": 
-    {
-        "wasp": Wasp, 
-        "yellowjacket": Yellowjacket,
-    }, 
-
-    "1-cost": 
-    {
-        "mistyKnight": MistyKnight, 
-        "antMan": AntMan, 
-        "elektra": Elektra, 
-        "mantis": Mantis, 
-    }, 
-
-    "2-cost": 
-    {
-        "shocker": Shocker, 
-        "starLord": StarLord,
-    }, 
-
-    "3-cost": 
-    {
-        "cyclops": Cyclops, 
-        "groot": Groot, 
-    }, 
-
-    "5-cost": 
-    {
-        "theThing": TheThing, 
-    }, 
-
-}
-
-def getFlatCardDict(CARD_DICT):
+def getFlatCardDict():
     FLAT_CARD_DICT = {}
-    for _, COST_CARD_DICT in CARD_DICT.items():
-        for key, val in COST_CARD_DICT.items():
-            FLAT_CARD_DICT[key] = val
+    sub = all_subclasses(Card)
+    for s in sub:
+        try:
+            FLAT_CARD_DICT[s().name] = s()
+        except:
+            pass
     return FLAT_CARD_DICT
 
+FLAT_CARD_DICT = getFlatCardDict()
+# FLAT_UNPLAYABLE_CARD_DICT = getFlatCardDict(UNPLAYABLE_CARD_DICT)
 
-
-FLAT_CARD_DICT = getFlatCardDict(CARD_DICT)
-FLAT_UNPLAYABLE_CARD_DICT = getFlatCardDict(UNPLAYABLE_CARD_DICT)
