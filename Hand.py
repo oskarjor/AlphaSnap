@@ -15,6 +15,9 @@ class Hand(object):
     def __str__(self) -> str:
         return str([str(card) for card in self.cards])
 
+    def __len__(self) -> int:
+        return len(self.cards)
+
     def getNumCards(self):
         return len(self.cards)
 
