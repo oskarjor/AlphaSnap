@@ -31,7 +31,6 @@ class TestScraper(unittest.TestCase):
     def test_all_cards_implemented(self):
         unimplemented = 0
         unimplemented_names = []
-        print(self.implemented_card_names)
         for key in self.data.keys():
             if key.lower() not in self.implemented_card_names:
                 unimplemented += 1
