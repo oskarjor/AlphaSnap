@@ -31,6 +31,8 @@ class Player(object):
         return True
 
     def selectMove(self, legalMoves: list[list[Card.Card, Location.Location]]) -> list[Card.Card, Location.Location]:
+        # TODO: implement a reinforcement agent, train it to become the best player
+        # release it online and spread terror in the Marvel Snap community
         move = random.choice(legalMoves)
         return move
 
@@ -44,11 +46,13 @@ class Player(object):
 
     def playMove(self, move: list[Card.Card, Location.Location]):
         if (move == None):
-            return None
+            raise TypeError("Move cannot be None")
         card, location = move
         if (not self.playIsLegal(card, location)):  # technically reduntant
             return None
-        location.addCard(card, self)
-        self.hand.removeCard(card)
-        self.availableEnergy -= card.cost
-        return move
+        removed = self.hand.removeCard(card)
+        if removed:
+            location.addCard(card, self)
+            self.availableEnergy -= card.cost
+            return move
+        return None
