@@ -49,7 +49,9 @@ class Hand(object):
         return False
 
     def removeCard(self, card: Card.Card):
-        if (len(self.cards) == 0 or card not in self.cards):
-            return False
+        if len(self.cards) == 0:
+            raise KeyError("Hand is empty")
+        if card not in self.cards:
+            raise KeyError(f"{card} not in hand")
         self.cards.remove(card)
         return True
