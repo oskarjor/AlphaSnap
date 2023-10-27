@@ -258,6 +258,33 @@ class Hulk(Card):
         super().__init__(cost, power, name)
 
 
+# class AbsorbingMan(Card):
+
+#     def __init__(self, cost=4, power=4, name="Absorbing Man"):
+#         super().__init__(cost, power, name)
+
+#     def onReveal(self, game: Game.Game = None):
+#         return super().onReveal(game)
+
+#     # TODO: check if last card has onReveal function
+#     # if yes -> this will copy it
+#     def lastCardPlayed(self, game: Game.Game = None):
+#         for t in range(game.turn, -1, -1):
+#             for event in game.gameHistory[t]:
+#                 pass
+
+
+class AdamWarlock(Card):
+
+    def __init__(self, cost=2, power=0, name="Adam Warlock"):
+        super().__init__(cost, power, name)
+
+    def ongoing(self, game: Game = None):
+        super().ongoing(game)
+        if self.atLocation.playerIsWinning(self.player) == 1:
+            self.player.drawCard()
+
+
 def getFlatCardDict():
     FLAT_CARD_DICT = {}
     sub = all_subclasses(Card)
