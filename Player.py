@@ -37,7 +37,7 @@ class Player(object):
     def drawCard(self):
         if (self.hand.handIsFull()):
             return False
-        if (self.deck.deckIsEmpty()):
+        if (self.deck.isEmpty()):
             return False
         self.hand.addCard(self.deck.removeCardByIndex())
         return True
