@@ -156,6 +156,8 @@ class Attilan(Location):
                 player.deck.shuffle()
                 for _ in range(3):
                     player.drawCard()
+            if utils.GLOBAL_CONSTANTS.VERBOSE > 0:
+                print("Attilan activated, shuffle hands -> draw 3")
 
 
 def getFlatLocationDict():
