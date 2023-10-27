@@ -27,12 +27,18 @@ class GameHistory(object):
         # eventType = gameStarted               ->      turn : ["gameStarted"]       (check)
         # eventType = gameEnded                 ->      turn : ["gameEnded", result] (check)
         self.history = {}
+        self.current_turn = 0
 
-    def addEvent(self, turn: int, event: list) -> None:
+    def addEvent(self, event: list, turn: int | None = None) -> None:
+        if turn == None:
+            turn = self.current_turn
         if turn in self.history:
             self.history[turn].append(event)
         else:
             self.history[turn] = [event]
+
+    def updateTurn(self, turn: int) -> None:
+        self.turn = turn
 
     def getLatestEventInGame(self, turn: int) -> list | None:
         while turn > 0:
@@ -55,9 +61,11 @@ class GameHistory(object):
         else:
             return None
 
-    def getLatestEventOfTypeInGame(self, turn: int, eventType: str) -> list | None:
+    def getLatestEventOfTypeInGame(self, eventType: str) -> list | None:
+        turn = self.current_turn
         while turn > 0:
-            event = self.getLatestEventOfTypeInTurn(turn=turn)
+            event = self.getLatestEventOfTypeInTurn(
+                turn=turn, eventType=eventType)
             if event != None:
                 return event
             else:

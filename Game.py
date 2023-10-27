@@ -32,17 +32,6 @@ class Game(object):
         # }
         # event_i = [eventType, ...]
         #
-        # CARD ACTIONS:
-        # eventType = cardPlayed                ->      turn : ["cardPlayed", player, card, location]       (check)
-        # eventType = cardRevealed              ->      turn : ["cardRevealed", player, card, location]     (check)
-        # eventType = cardMoved                 ->      turn : ["cardMoved", player, card, fromLocation, toLocation]
-        # eventType = cardDestroyed             ->      turn : ["cardDestroyed", player, card, location]
-        # eventType = cardDiscarded             ->      turn : ["cardDiscarded", player, card, location]
-        #
-        # LOCATION ACTIONS:
-        # eventType = locationRevealed          ->      turn : ["locationRevealed", location]
-        # eventType = locationAbilityTriggered  ->      turn : ["locationAbilityTriggered", location]
-        #
         # GAME ACTIONS:
         # eventType = turnStart                 ->      turn : ["turnStarted"]       (check)
         # eventType = turnEnd                   ->      turn : ["turnEnded"]         (check)
@@ -60,8 +49,16 @@ class Game(object):
         legalMoves.append(None)
         return legalMoves
 
+    def getPlayerByIdx(self, idx: int):
+        if idx == 0:
+            return player0
+        elif idx == 1:
+            return player1
+        return None
+
     def updateTurn(self, turn):
         self.turn = turn
+        self.gameHistory.updateTurn(self.turn)
         self.player0.availableEnergy = self.turn
         self.player1.availableEnergy = self.turn
         event = GLOBAL_CONSTANTS.TURN_STARTED()

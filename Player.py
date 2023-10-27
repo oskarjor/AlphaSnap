@@ -13,9 +13,8 @@ if TYPE_CHECKING:
 
 class Player(object):
 
-    def __init__(self, cardNames: list[str], playerIdx: int, availableEnergy: int = 0) -> None:
-        self.cardNames = cardNames
-        self.deck = Deck.Deck(cardNames)
+    def __init__(self, cards: list[Card.Card], playerIdx: int, availableEnergy: int = 0) -> None:
+        self.deck = Deck.Deck(cards)
         self.hand = Hand.Hand()
         self.isStarting = None
         self.availableEnergy = availableEnergy

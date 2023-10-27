@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from utils.utils import all_subclasses
 
 from Card import Card
+from GameHistory import gameHistory
 
 if TYPE_CHECKING:
     import Game
@@ -30,6 +31,12 @@ class Location(object):
         # location is locked. No cards can be moved from here or to here, played here
         self.locked = False
         # or summoned here (Professor X effect)
+
+        # LOCATION ACTIONS:
+        # eventType = locationRevealed          ->      turn : ["locationRevealed", location]
+        # eventType = locationAbilityTriggered  ->      turn : ["locationAbilityTriggered", location]
+        #
+        self.gameHistory = gameHistory
 
     def __str__(self) -> str:
         return f"{self.name} ({self.idx})"
