@@ -25,13 +25,16 @@ class Deck(object):
     def __str__(self) -> str:
         return str([str(card) for card in self.cards])
 
+    def __len__(self) -> int:
+        return len(self.cards)
+
     def getNumCards(self):
         return len(self.cards)
 
     def addCard(self, card: Card.Card):
         self.cards.append(card)
 
-    def deckIsEmpty(self):
+    def isEmpty(self):
         return self.getNumCards() == 0
 
     def removeCard(self, targetCard: Card.Card):
@@ -40,7 +43,7 @@ class Deck(object):
                 return self.removeCardByIndex(i)
 
     def removeCardByIndex(self, index=0):
-        if (self.deckIsEmpty()):
+        if (self.isEmpty()):
             raise IndexError("Deck is empty")
         if (index >= len(self.cards)):
             raise IndexError("Index out of range")
