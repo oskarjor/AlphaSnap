@@ -37,5 +37,9 @@ class TestScraper(unittest.TestCase):
                 unimplemented_names.append(key)
 
         if unimplemented > 0:
-            raise NotImplementedError(
-                f"{unimplemented_names} not implemented ({unimplemented})")
+            if GLOBAL_CONSTANTS.VERBOSE > 0:
+                raise NotImplementedError(
+                    f"{unimplemented_names} not implemented ({unimplemented})")
+            else:
+                raise NotImplementedError(
+                    f"{unimplemented} cards not implemented")
