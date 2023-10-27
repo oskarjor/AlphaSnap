@@ -168,7 +168,7 @@ class TestCards(unittest.TestCase):
     def test_mantisTrigger(self):
         mistyKnight = Card.MistyKnight()
         mantis = Card.Mantis()
-        self.player1.deck = Deck.Deck(["Misty Knight", "Ant-Man"])
+        self.player1.deck = Deck.Deck([Card.MistyKnight(), Card.AntMan()])
 
         prevHandSize = self.player1.hand.getNumCards()
         self.location.addCard(mistyKnight, self.player0)
@@ -179,7 +179,7 @@ class TestCards(unittest.TestCase):
 
     def test_mantisNotTrigger(self):
         mantis = Card.Mantis()
-        self.player1.deck = Deck.Deck(["Misty Knight", "Ant-Man"])
+        self.player1.deck = Deck.Deck([Card.MistyKnight(), Card.AntMan()])
 
         prevHandSize = self.player1.hand.getNumCards()
         self.location.addCard(mantis, self.player1)
@@ -226,7 +226,7 @@ class TestCards(unittest.TestCase):
         mistyKnight = Card.MistyKnight()
         abomination = Card.Abomination()
         adamWarlock = Card.AdamWarlock()
-        self.player0.deck = Deck.Deck(["Misty Knight", "Ant-Man"])
+        self.player0.deck = Deck.Deck([Card.MistyKnight(), Card.AntMan()])
 
         prevHandSize = self.player0.hand.getNumCards()
         self.location.addCard(mistyKnight, self.player1)
@@ -244,7 +244,7 @@ class TestCards(unittest.TestCase):
     def test_adamWarlockNotTrigger(self):
         mistyKnight = Card.MistyKnight()
         adamWarlock = Card.AdamWarlock()
-        self.player0.deck = Deck.Deck(["Misty Knight", "Ant-Man"])
+        self.player0.deck = Deck.Deck([Card.MistyKnight(), Card.AntMan()])
 
         prevHandSize = self.player0.hand.getNumCards()
         self.location.addCard(mistyKnight, self.player1)
@@ -256,6 +256,10 @@ class TestCards(unittest.TestCase):
             playerIdx=self.player0.playerIdx, game=None)
         newHandSize = self.player0.hand.getNumCards()
         self.assertEqual(prevHandSize, newHandSize)
+
+    def test_iceman(self):
+        self.player0.deck = Deck.Deck([Card.MistyKnight(), Card.AntMan()])
+        prevCost = 0
 
 
 if __name__ == "__main__":

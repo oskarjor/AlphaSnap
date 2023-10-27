@@ -64,11 +64,12 @@ class TestLocations(unittest.TestCase):
             self.player1.playerIdx), 2+2)
 
     def test_asgard(self):
-        initalDeckCards = GLOBAL_CONSTANTS.SAMPLE_DECK
+        # TODO: wtf is this
+        initalDeckCards = [Card.MistyKnight(), Card.Wasp(), ]
         initalDeckSize = len(initalDeckCards)
         board = Board.Board()
-        player0 = Player.Player(initalDeckCards, 0)
-        player1 = Player.Player(initalDeckCards, 0)
+        player0 = Player.Player(initalDeckCards.copy(), 0)
+        player1 = Player.Player(initalDeckCards.copy(), 0)
         game = Game.Game(board, player0, player1)
         game.updateTurn(4)
 

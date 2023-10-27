@@ -7,12 +7,18 @@ import Card
 
 
 class Deck(object):
-    def __init__(self, cardNames: list[str]) -> None:
+    def __init__(self, cards: list[Card.Card]) -> None:
+        cardNames = [card.name for card in cards]
+        if (len(cardNames) != len(set(cardNames))):
+            raise ValueError("Duplicate cards not allowed")
+        self.cards = cards
+
+    def createCardsFromCardNames(self, cardNames: list[str]) -> None:
         if (len(cardNames) != len(set(cardNames))):
             raise ValueError("Duplicate cards not allowed")
         FLAT_CARD_DICT = Card.getFlatCardDict()
         for cardName in cardNames:
-            if (cardName not in FLAT_CARD_DICT.keys()):
+            if (cardName not in FLAT_CARD_DICT):
                 raise ValueError("Invalid card name:", cardName)
         self.cards = [FLAT_CARD_DICT[cardName]() for cardName in cardNames]
 

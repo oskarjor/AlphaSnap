@@ -7,7 +7,7 @@ import Card
 class TestDeck(unittest.TestCase):
 
     def test_deck(self):
-        deck = Deck.Deck(["Misty Knight", "Ant-Man", "Wasp"])
+        deck = Deck.Deck([Card.MistyKnight(), Card.AntMan(), Card.Wasp()])
         self.assertEqual(deck.getNumCards(), 3)
         removedCard = deck.removeCardByIndex()
         self.assertEqual(type(removedCard), Card.MistyKnight)
@@ -20,8 +20,9 @@ class TestDeck(unittest.TestCase):
 
     def test_duplicateCards(self):
         with self.assertRaises(ValueError):
-            _ = Deck.Deck(["Misty Knight", "Misty Knight"])
+            _ = Deck.Deck([Card.MistyKnight(), Card.MistyKnight()])
 
     def test_nonExistentCard(self):
         with self.assertRaises(ValueError):
-            _ = Deck.Deck(["aSupidCardThatDoesNotExist"])
+            deck = Deck.Deck([])
+            deck.createCardsFromCardNames(["aStupidCardThatDoesNotExist"])
