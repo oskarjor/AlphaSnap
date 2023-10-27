@@ -7,10 +7,8 @@ TURN_STAGES = {
     "AFTER_TURN": 2,
 }
 
-SAMPLE_DECK = ["Wasp", "Misty Knight", "Shocker",
-               "Star Lord", "Cyclops", "Groot", "The Thing"]
 
-VERBOSE = 2
+VERBOSE = 0
 
 PATH_TO_IMAGES = "images/"
 PATH_TO_CHARACHTER_STATS = "characters/"
