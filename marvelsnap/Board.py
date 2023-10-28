@@ -10,8 +10,14 @@ if TYPE_CHECKING:
 
 class Board(object):
 
-    def __init__(self) -> None:
-        self.locations = [None, None, None]
+    def __init__(self, locations: list[Location.Location] | None = None) -> None:
+        if not locations:
+            self.locations = [None, None, None]
+        else:
+            self.locations = locations
+
+    def getLocations(self):
+        return self.locations
 
     def createLocation(self, idx: int, locationName: str) -> None:
         if (utils.GLOBAL_CONSTANTS.VERBOSE > 1):
