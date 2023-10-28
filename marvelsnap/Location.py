@@ -5,6 +5,7 @@ from utils.utils import all_subclasses
 
 from Card import Card
 from GameHistory import gameHistory
+import Event
 
 if TYPE_CHECKING:
     import Game
@@ -21,6 +22,7 @@ class Location(object):
         self.cardSpaces = cardSpaces
         self.cards = [[], []]
         self.desc = desc
+        self.isRevealed = False
         self.ongoinEnabled = True
         self.onRevealEnabled = True
         self.cardPlayedThisTurn = [False, False]
@@ -52,6 +54,11 @@ class Location(object):
         card.atLocation = self
         card.player = player
         self.cardPlayedThisTurn[playerIdx] = True
+
+    def reveal(self):
+        self.isRevealed = True
+        event = Event.LocationRevealed(location=self)
+        gameHistory.addEvent(event=event)
 
     def triggerAllOngoing(self, playerIdx: int, game: Game.Game):
         if (self.ongoinEnabled):
