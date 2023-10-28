@@ -228,3 +228,4 @@ if __name__ == "__main__":
     player1 = Player.Player(cards=cards1, playerIdx=1)
     game = Game(board, player0, player1)
     game.playGame()
+    print(gameHistory)
