@@ -1,8 +1,8 @@
 import unittest
 
-import Player
-import Card
-import Location
+from marvelsnap import Player
+from marvelsnap import Card
+from marvelsnap import Location
 
 
 class TestDeck(unittest.TestCase):

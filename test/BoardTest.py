@@ -1,9 +1,9 @@
 import unittest
 import random
 
-import Player
-import Board
-import Location
+from marvelsnap import Player
+from marvelsnap import Board
+from marvelsnap import Location
 
 
 class TestBoard(unittest.TestCase):

@@ -1,12 +1,10 @@
 import unittest
 
-import Card
-import Location
-import Player
-import Game
-import Board
-
-import utils.GLOBAL_CONSTANTS as GLOBAL_CONSTANTS
+from marvelsnap import Card
+from marvelsnap import Location
+from marvelsnap import Player
+from marvelsnap import Game
+from marvelsnap import Board
 
 
 class TestLocations(unittest.TestCase):

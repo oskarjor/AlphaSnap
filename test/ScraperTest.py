@@ -2,14 +2,10 @@ import unittest
 import json
 import os
 
-import Card
-import Location
-import Player
-import Game
-import Board
+from marvelsnap import Card
 
-import utils.GLOBAL_CONSTANTS as GLOBAL_CONSTANTS
-from utils.utils import all_subclasses
+from marvelsnap.utils import GLOBAL_CONSTANTS
+from marvelsnap.utils.utils import all_subclasses
 
 
 class TestScraper(unittest.TestCase):

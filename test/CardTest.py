@@ -1,11 +1,10 @@
 import unittest
 
-import Card
-import Location
-import Player
-import Deck
-import Hand
-import Game
+from marvelsnap import Card
+from marvelsnap import Location
+from marvelsnap import Player
+from marvelsnap import Deck
+from marvelsnap import Hand
 
 
 class TestCards(unittest.TestCase):

@@ -1,7 +1,7 @@
 import unittest
 
-import Deck
-import Card
+from marvelsnap import Deck
+from marvelsnap import Card
 
 
 class TestDeck(unittest.TestCase):
