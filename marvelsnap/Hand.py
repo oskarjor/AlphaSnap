@@ -42,11 +42,11 @@ class Hand(object):
             return random.choice(self.cards.copy())
         return None
 
-    def discardCard(self, card: Card.Card) -> bool:
-        if (self.removeCard(card=card)):
-            card.onDiscard()
-            return True
-        return False
+    # def discardCard(self, card: Card.Card) -> bool:
+    #     if (self.removeCard(card=card)):
+    #         card.onDiscard()
+    #         return True
+    #     return False
 
     def removeCard(self, card: Card.Card):
         if len(self.cards) == 0:

@@ -46,7 +46,6 @@ class Game(object):
             for location in self.board.locations:
                 if (player.playIsLegal(card, location)):
                     legalMoves.append([card, location])
-        legalMoves.append(None)
         return legalMoves
 
     def getPlayerByIdx(self, idx: int):
@@ -98,18 +97,18 @@ class Game(object):
         player1PlayQueue = []
         while True:
             legalMoves = self.getLegalMoves(self.player0)
+            if len(legalMoves) == 0:
+                break
             moveToPlay = self.player0.selectMove(legalMoves)
             playedMove = self.player0.playMove(moveToPlay)
-            if (playedMove == None):
-                break
             player0PlayQueue.append(playedMove + [self.player0])
 
         while True:
             legalMoves = self.getLegalMoves(self.player1)
+            if len(legalMoves) == 0:
+                break
             moveToPlay = self.player1.selectMove(legalMoves)
             playedMove = self.player1.playMove(moveToPlay)
-            if (playedMove == None):
-                break
             player1PlayQueue.append(playedMove + [self.player1])
 
         playQueue = []
@@ -219,9 +218,11 @@ if __name__ == "__main__":
     import Card
     FLAT_CARD_DICT = Card.getFlatCardDict()
     board = Board()
-    cardNames0 = random.sample(list(FLAT_CARD_DICT.keys()), 6)
-    cardNames1 = random.sample(list(FLAT_CARD_DICT.keys()), 6)
-    player0 = Player.Player(cardNames=cardNames0, playerIdx=0)
-    player1 = Player.Player(cardNames=cardNames1, playerIdx=1)
+    cards0 = [card() for card in random.sample(
+        list(FLAT_CARD_DICT.values()), 6)]
+    cards1 = [card() for card in random.sample(
+        list(FLAT_CARD_DICT.values()), 6)]
+    player0 = Player.Player(cards=cards0, playerIdx=0)
+    player1 = Player.Player(cards=cards1, playerIdx=1)
     game = Game(board, player0, player1)
     game.playGame()

@@ -40,20 +40,24 @@ class GameHistory(object):
     def updateTurn(self, turn: int) -> None:
         self.turn = turn
 
-    def getLatestEventInGame(self, turn: int) -> list | None:
+    def getLatestEventInGame(self, turn: int, playerIdx: int = -1) -> list | None:
         while turn > 0:
-            event = self.getLatestEventInTurn(turn=turn)
+            event = self.getLatestEventInTurn(turn=turn, playerIdx=playerIdx)
             if event != None:
                 return event
             else:
                 turn -= 1
         return None
 
-    def getLatestEventInTurn(self, turn: int) -> list | None:
+    def getLatestEventInTurn(self, turn: int, playerIdx: int = -1) -> list | None:
         turnHistory = self.getTurnHistory(turn=turn)
-        if turnHistory:
+        if not turnHistory:
+            return None
+        if playerIdx == -1:
             return turnHistory[-1]
-        return None
+        turnHistory.reverse()
+        for event in turnHistory:
+            pass
 
     def getTurnHistory(self, turn: int) -> list | None:
         if turn in self.history:
@@ -71,6 +75,9 @@ class GameHistory(object):
             else:
                 turn -= 1
         return None
+
+    def getLastCardPlayed(self, playerIdx: int = -1):
+
 
     def getLatestEventOfTypeInTurn(self, turn: int, eventType: str) -> list | None:
         turnHistory = self.getTurnHistory(turn=turn)
