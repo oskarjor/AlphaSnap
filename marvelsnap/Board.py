@@ -1,11 +1,6 @@
-import utils.GLOBAL_CONSTANTS
 import random
-import Location
 
-import Player
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    pass
+from marvelsnap import Location, Player, utils
 
 
 class Board(object):

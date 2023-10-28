@@ -2,15 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 import random
-from utils.utils import all_subclasses
-from GameHistory import gameHistory
-from utils import GLOBAL_CONSTANTS
-import Event
+
+from marvelsnap import Event
+from marvelsnap.utils.utils import all_subclasses
+from marvelsnap.GameHistory import gameHistory
 
 if TYPE_CHECKING:
-    import Game
-    import Player
-    import Location
+    from marvelsnap import Game, Player, Location
 
 
 class Card(object):
@@ -39,7 +37,7 @@ class Card(object):
     def getPower(self) -> int:
         return self.power + sum(self.otherPowerSources.values())
 
-    def ongoing(self, game: Game.Game):
+    def ongoing(self, game):
         return None
 
     def onReveal(self, game: Game.Game):

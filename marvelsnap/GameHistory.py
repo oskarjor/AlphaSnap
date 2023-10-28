@@ -1,4 +1,4 @@
-import Event
+from marvelsnap import Event
 
 
 class GameHistory(object):

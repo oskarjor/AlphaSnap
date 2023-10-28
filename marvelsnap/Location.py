@@ -1,17 +1,14 @@
 from __future__ import annotations
-
 from typing import TYPE_CHECKING
-from utils.utils import all_subclasses
 
-from Card import Card
-from GameHistory import gameHistory
-import Event
+from marvelsnap import Card, Event
+from marvelsnap.utils.utils import all_subclasses
+from marvelsnap.GameHistory import gameHistory
 
 if TYPE_CHECKING:
-    import Game
-    import Player
+    from marvelsnap import Game, Player
 
-import utils.GLOBAL_CONSTANTS
+from marvelsnap.utils import GLOBAL_CONSTANTS
 
 
 class Location(object):
@@ -46,7 +43,7 @@ class Location(object):
     def locationAbility(self, game: Game.Game = None):
         return None
 
-    def addCard(self, card: Card, player):
+    def addCard(self, card: Card.Card, player):
         playerIdx = player.playerIdx
         if (not self.getPlayable(playerIdx=playerIdx)):
             raise ValueError("Can't add more cards here")
@@ -65,15 +62,15 @@ class Location(object):
             for card in self.cards[playerIdx]:
                 card.ongoing(game)
 
-    def triggerOnReveal(self, card: Card, game: Game.Game):
+    def triggerOnReveal(self, card: Card.Card, game: Game.Game):
         if (self.onRevealEnabled):
             return card.onReveal(game)
 
-    def destroyCard(self, card: Card, player: Player.Player, game: Game.Game):
+    def destroyCard(self, card: Card.Card, player: Player.Player, game: Game.Game):
         card.onDestroy(game)
         self.removeCard(card, playerIdx=player.playerIdx)
 
-    def removeCard(self, card: Card, playerIdx: int):
+    def removeCard(self, card: Card.Card, playerIdx: int):
         self.cards[playerIdx].remove(card)
         # self.triggerAllOngoing(playerIdx, game)
 
@@ -119,14 +116,14 @@ class Asgard(Location):
 
     def locationAbility(self, game: Game.Game):
         super().locationAbility(game)
-        if (game.turn == 4 and game.stage == utils.GLOBAL_CONSTANTS.TURN_STAGES["AFTER_TURN"]):
+        if (game.turn == 4 and game.stage == GLOBAL_CONSTANTS.TURN_STAGES["AFTER_TURN"]):
             if (self.playerIsWinning(game.player0) == 1):
-                if (utils.GLOBAL_CONSTANTS.VERBOSE > 0):
+                if (GLOBAL_CONSTANTS.VERBOSE > 0):
                     print("Asgard: player0 drew 2 cards!")
                 game.player0.drawCard()
                 game.player0.drawCard()
             if (self.playerIsWinning(game.player1) == 1):
-                if (utils.GLOBAL_CONSTANTS.VERBOSE > 0):
+                if (GLOBAL_CONSTANTS.VERBOSE > 0):
                     print("Asgard: player1 drew 2 cards!")
                 game.player1.drawCard()
                 game.player1.drawCard()
@@ -143,14 +140,14 @@ class Atlantis(Location):
             if (len(self.cards[i]) == 1):
                 if (self in self.cards[i][0].otherPowerSources.keys()):
                     continue
-                if (utils.GLOBAL_CONSTANTS.VERBOSE > 0):
+                if (GLOBAL_CONSTANTS.VERBOSE > 0):
                     print(f"Atlantis: {self.cards[i][0]} gained power")
                 self.cards[i][0].otherPowerSources[self] = 5
             else:
                 for card in self.cards[i]:
                     cardPopped = card.otherPowerSources.pop(self, None)
                     if (cardPopped != None):
-                        if (utils.GLOBAL_CONSTANTS.VERBOSE > 0):
+                        if (GLOBAL_CONSTANTS.VERBOSE > 0):
                             print(f"Atlantis: {
                                   self.cards[i][0]} lost bonus power")
 
@@ -162,7 +159,7 @@ class Attilan(Location):
 
     def locationAbility(self, game: Game.Game = None):
         super().locationAbility(game)
-        if (game.turn == 3 and game.stage == utils.GLOBAL_CONSTANTS.TURN_STAGES["AFTER_TURN"]):
+        if (game.turn == 3 and game.stage == GLOBAL_CONSTANTS.TURN_STAGES["AFTER_TURN"]):
             for player in [game.player0, game.player1]:
                 for card in player.hand.cards:
                     player.hand.removeCard(card)
@@ -170,7 +167,7 @@ class Attilan(Location):
                 player.deck.shuffle()
                 for _ in range(3):
                     player.drawCard()
-            if utils.GLOBAL_CONSTANTS.VERBOSE > 0:
+            if GLOBAL_CONSTANTS.VERBOSE > 0:
                 print("Attilan activated, shuffle hands -> draw 3")
 
 

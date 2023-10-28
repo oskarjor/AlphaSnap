@@ -3,10 +3,8 @@ from __future__ import annotations
 import random
 from typing import TYPE_CHECKING
 
-import Deck
-import Hand
-from GameHistory import gameHistory
-import Event
+from marvelsnap import Deck, Event, Hand
+from marvelsnap.GameHistory import gameHistory
 
 if TYPE_CHECKING:
     import Location
