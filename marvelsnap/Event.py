@@ -1,12 +1,10 @@
 from typing import TYPE_CHECKING
 
 from enum import Enum
-
-import marvelsnap.Location
-
 if TYPE_CHECKING:
     import Card
     import Location
+    import Player
 
 
 class Event(object):
@@ -43,64 +41,65 @@ class GameEventCateogories(Enum):
 
 class CardEvent(Event):
 
-    def __init__(self, card: Card.Card, location: Location.Location) -> None:
+    def __init__(self, player, card, location) -> None:
         super().__init__(EventCategories.CARD_EVENT)
+        self.player = player
         self.card = card
         self.location = location
 
 
 class CardPlayed(CardEvent):
 
-    def __init__(self, card: Card, location: Location.Location) -> None:
-        super().__init__(card, location)
+    def __init__(self, player, card, location) -> None:
+        super().__init__(player, card, location)
         self.sub_category = CardEventCategories.CARD_PLAYED
 
 
 class CardRevealed(CardEvent):
 
-    def __init__(self, card: Card, location: Location.Location) -> None:
-        super().__init__(card, location)
+    def __init__(self, player, card, location) -> None:
+        super().__init__(player, card, location)
         self.sub_category = CardEventCategories.CARD_REVEALED
 
 
 class CardMoved(CardEvent):
 
-    def __init__(self, card: Card, location: Location.Location) -> None:
-        super().__init__(card, location)
+    def __init__(self, player, card, location) -> None:
+        super().__init__(player, card, location)
         self.sub_category = CardEventCategories.CARD_MOVED
 
 
 class CardDiscarded(CardEvent):
 
-    def __init__(self, card: Card, location: Location.Location) -> None:
-        super().__init__(card, location)
+    def __init__(self, player, card, location) -> None:
+        super().__init__(player, card, location)
         self.sub_category = CardEventCategories.CARD_DISCARDED
 
 
 class CardDestroyed(CardEvent):
 
-    def __init__(self, card: Card, location: Location.Location) -> None:
-        super().__init__(card, location)
+    def __init__(self, player, card, location) -> None:
+        super().__init__(player, card, location)
         self.sub_category = CardEventCategories.CARD_DESTROYED
 
 
 class LocationEvent(Event):
 
-    def __init__(self, location: Location.Location) -> None:
+    def __init__(self, location) -> None:
         super().__init__(EventCategories.LOCATION_EVENT)
         self.location = location
 
 
 class LocationRevealed(LocationEvent):
 
-    def __init__(self, location: Location) -> None:
+    def __init__(self, location) -> None:
         super().__init__(location)
         self.sub_category = LocationEventCategories.LOCATION_REVEALED
 
 
 class LocationAbilityTriggered(LocationEvent):
 
-    def __init__(self, location: Location) -> None:
+    def __init__(self, location) -> None:
         super().__init__(location)
         self.sub_category = LocationEventCategories.LOCATION_ABILTITY_TRIGGERED
 

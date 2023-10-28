@@ -5,6 +5,7 @@ import random
 from utils.utils import all_subclasses
 from GameHistory import gameHistory
 from utils import GLOBAL_CONSTANTS
+import Event
 
 if TYPE_CHECKING:
     import Game
@@ -42,27 +43,27 @@ class Card(object):
         return None
 
     def onReveal(self, game: Game.Game):
-        event = GLOBAL_CONSTANTS.CARD_REVEALED(
+        event = Event.CardRevealed(
             player=self.player, card=self, location=self.atLocation)
         gameHistory.addEvent(event=event)
         self.revealed = True
         return None
 
     def onDestroy(self, game: Game.Game):
-        event = GLOBAL_CONSTANTS.CARD_DESTROYED(
+        event = Event.CardDestroyed(
             player=self.player, card=self, location=self.atLocation)
         gameHistory.addEvent(event=event)
         return None
 
     def onMove(self, game: Game.Game, toLocation: Location.Location):
-        event = GLOBAL_CONSTANTS.CARD_MOVED(
-            player=self.player, card=self, toLocation=toLocation)
+        event = Event.CardMoved(
+            player=self.player, card=self, location=self.atLocation)
         gameHistory.addEvent(event=event)
         self.atLocation = toLocation
         return None
 
     def onDiscard(self, game: Game.Game):
-        event = GLOBAL_CONSTANTS.CARD_DISCARDED(
+        event = Event.CardDiscarded(
             player=self.player, card=self, location=self.atLocation)
         gameHistory.addEvent(event=event)
         return None

@@ -1,3 +1,6 @@
+import Event
+
+
 class GameHistory(object):
 
     def __init__(self) -> None:
@@ -29,7 +32,7 @@ class GameHistory(object):
         self.history = {}
         self.current_turn = 0
 
-    def addEvent(self, event: list, turn: int | None = None) -> None:
+    def addEvent(self, event: Event.Event, turn: int | None = None) -> None:
         if turn == None:
             turn = self.current_turn
         if turn in self.history:
@@ -77,7 +80,7 @@ class GameHistory(object):
         return None
 
     def getLastCardPlayed(self, playerIdx: int = -1):
-
+        pass
 
     def getLatestEventOfTypeInTurn(self, turn: int, eventType: str) -> list | None:
         turnHistory = self.getTurnHistory(turn=turn)

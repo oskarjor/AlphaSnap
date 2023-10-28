@@ -8,6 +8,7 @@ from Location import Location
 import pprint
 from GameHistory import gameHistory
 from utils import GLOBAL_CONSTANTS
+import Event
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -60,7 +61,7 @@ class Game(object):
         self.gameHistory.updateTurn(self.turn)
         self.player0.availableEnergy = self.turn
         self.player1.availableEnergy = self.turn
-        event = GLOBAL_CONSTANTS.TURN_STARTED()
+        event = Event.TurnStarted()
         self.gameHistory.addEvent(turn=self.turn, event=event)
 
     def triggerAllLocationAbilities(self):
@@ -68,7 +69,7 @@ class Game(object):
             loc.locationAbility(self)
 
     def startGame(self) -> None:
-        event = GLOBAL_CONSTANTS.GAME_STARTED()
+        event = Event.GameStarted()
         self.gameHistory.addEvent(turn=self.turn, event=event)
         self.board.setupLocations()
 
@@ -119,7 +120,7 @@ class Game(object):
 
         for move in playQueue:
             card, location, player = move
-            event = GLOBAL_CONSTANTS.CARD_PLAYED(
+            event = Event.CardPlayed(
                 player=player, card=card, location=location)
             self.gameHistory.addEvent(turn=self.turn, event=event)
 
@@ -131,7 +132,7 @@ class Game(object):
         for loc in self.board.locations:
             loc.triggerAllOngoing(self.player0.playerIdx, self)
             loc.triggerAllOngoing(self.player1.playerIdx, self)
-        event = GLOBAL_CONSTANTS.TURN_ENDED()
+        event = Event.TurnEnded()
         self.gameHistory.addEvent(turn=self.turn, event=event)
 
     def revealCards(self, playQueue: list[Card, Location, Player.Player]):
@@ -142,14 +143,15 @@ class Game(object):
 
     def endGame(self):
         gameWinner = self.board.playerIsWinning(player0)
+        event = Event.GameEnded()
         if (gameWinner == 1):
-            event = GLOBAL_CONSTANTS.GAME_ENDED(result=player0)
+            # event = GLOBAL_CONSTANTS.GAME_ENDED(result=player0)
             print("Player 0 wins!")
         elif (gameWinner == -1):
-            event = GLOBAL_CONSTANTS.GAME_ENDED(result=player1)
+            # event = GLOBAL_CONSTANTS.GAME_ENDED(result=player1)
             print("Player 1 wins!")
         elif (gameWinner == 0):
-            event = GLOBAL_CONSTANTS.GAME_ENDED(result=None)
+            # event = GLOBAL_CONSTANTS.GAME_ENDED(result=None)
             print("It's a tie!")
         self.gameHistory.addEvent(turn=self.turn, event=event)
 
