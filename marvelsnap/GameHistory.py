@@ -51,7 +51,7 @@ class GameHistory(object):
             self.history[turn] = [event]
 
     def updateTurn(self, turn: int) -> None:
-        self.turn = turn
+        self.current_turn = turn
 
     def getLatestEventInGame(self, turn: int, playerIdx: int = -1) -> list | None:
         while turn > 0:
