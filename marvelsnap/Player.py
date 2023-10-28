@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING
 
 import Deck
 import Hand
+from GameHistory import gameHistory
+import Event
 
 if TYPE_CHECKING:
     import Location
@@ -41,7 +43,10 @@ class Player(object):
             return False
         if (self.deck.isEmpty()):
             return False
-        self.hand.addCard(self.deck.removeCardByIndex())
+        cardToAdd = self.deck.removeCardByIndex()
+        self.hand.addCard(cardToAdd)
+        event = Event.PlayerDrawCard(player=self, card=cardToAdd)
+        gameHistory.addEvent(event=event)
         return True
 
     def playMove(self, move: list[Card.Card, Location.Location]):
