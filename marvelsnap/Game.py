@@ -23,6 +23,7 @@ class Game(object):
         self.player1 = player1
         self.turn = 0
         self.stage = -1
+        self.initial_hand_size = 3
 
         # a dict of everything that has happened during the game
         # Format
@@ -58,23 +59,31 @@ class Game(object):
 
     def updateTurn(self, turn):
         self.turn = turn
-        self.gameHistory.updateTurn(self.turn)
-        self.player0.availableEnergy = self.turn
-        self.player1.availableEnergy = self.turn
+        self.gameHistory.updateTurn(turn)
+        self.player0.availableEnergy = turn
+        self.player0.turn = turn
+        self.player0.availableEnergy = turn
+        self.player1.turn = turn
         event = Event.TurnStarted()
-        self.gameHistory.addEvent(turn=self.turn, event=event)
+        self.gameHistory.addEvent(event=event)
 
     def triggerAllLocationAbilities(self):
         for loc in self.board.locations:
-            loc.locationAbility(self)
+            if loc.isRevealed:
+                loc.locationAbility(self)
 
     def startGame(self) -> None:
         event = Event.GameStarted()
-        self.gameHistory.addEvent(turn=self.turn, event=event)
+        self.gameHistory.addEvent(event=event)
         self.board.setupLocations()
+        for _ in range(self.initial_hand_size):
+            self.player0.drawCard()
+        for _ in range(self.initial_hand_size):
+            self.player1.drawCard()
 
     def beginTurn(self):
         self.updateTurn(self.turn + 1)
+        self.revealLocation()
         self.stage = utils.GLOBAL_CONSTANTS.TURN_STAGES["BEFORE_TURN"]
         self.triggerAllLocationAbilities()
         # reset all information stored from previous turn and update turn
@@ -122,7 +131,7 @@ class Game(object):
             card, location, player = move
             event = Event.CardPlayed(
                 player=player, card=card, location=location)
-            self.gameHistory.addEvent(turn=self.turn, event=event)
+            self.gameHistory.addEvent(event=event)
 
         return playQueue
 
@@ -133,7 +142,7 @@ class Game(object):
             loc.triggerAllOngoing(self.player0.playerIdx, self)
             loc.triggerAllOngoing(self.player1.playerIdx, self)
         event = Event.TurnEnded()
-        self.gameHistory.addEvent(turn=self.turn, event=event)
+        self.gameHistory.addEvent(event=event)
 
     def revealCards(self, playQueue: list[Card, Location, Player.Player]):
         for card, location, player in playQueue:
@@ -153,7 +162,12 @@ class Game(object):
         elif (gameWinner == 0):
             # event = GLOBAL_CONSTANTS.GAME_ENDED(result=None)
             print("It's a tie!")
-        self.gameHistory.addEvent(turn=self.turn, event=event)
+        self.gameHistory.addEvent(event=event)
+
+    def revealLocation(self):
+        if self.turn <= 3:
+            location = self.board.getLocations()[self.turn - 1]
+            location.reveal()
 
     def playGame(self):
         game.startGame()
@@ -196,17 +210,22 @@ class Game(object):
         print("Player 1 (opponent):")
         print("Hand:", player1.hand)
         print("-" * 124)
+        # Print 4 spots for cards with cards, three lanes for player 1
         for i in range(3, -1, -1):
             print(f"| Spot {i+1} | {str(player1Cards[0][i]).center(35)} | {
                   str(player1Cards[1][i]).center(35)} | {str(player1Cards[2][i]).center(35)} |")
         print("-" * 124)
-        print(f"| | {str(allLocations[0].getTotalPower(1)).center(35)} | {str(
+        # Print total power at each location for player 1
+        print(f"|{" "*8}| {str(allLocations[0].getTotalPower(1)).center(35)} | {str(
             allLocations[1].getTotalPower(1)).center(35)} | {str(allLocations[2].getTotalPower(1)).center(35)} |")
-        print(f"| | {str(allLocations[0]).center(35)} | {
-              str(allLocations[1]).center(35)} | {str(allLocations[2]).center(35)} |")
-        print(f"| | {str(allLocations[0].getTotalPower(0)).center(35)} | {str(
+        # Print name of locations
+        print(f"|{" "*8}| {str(allLocations[0] if allLocations[0].isRevealed else f"? ({allLocations[0]})").center(35)} | {str(
+            allLocations[1] if allLocations[1].isRevealed else f"? ({allLocations[1]})").center(35)} | {str(allLocations[2] if allLocations[2].isRevealed else f"? ({allLocations[2]})").center(35)} |")
+        # Pritn total power at each location for player 0
+        print(f"|{" "*8}| {str(allLocations[0].getTotalPower(0)).center(35)} | {str(
             allLocations[1].getTotalPower(0)).center(35)} | {str(allLocations[2].getTotalPower(0)).center(35)} |")
         print("-" * 124)
+        # Print 4 spots for cards with cards, three lanes for player 0
         for i in range(0, 4, 1):
             print(f"| Spot {i+1} | {str(player0Cards[0][i]).center(35)} | {
                   str(player0Cards[1][i]).center(35)} | {str(player0Cards[2][i]).center(35)} |")
