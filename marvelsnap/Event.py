@@ -17,6 +17,7 @@ class EventCategories(Enum):
     CARD_EVENT = 1
     LOCATION_EVENT = 2
     GAME_EVENT = 3
+    PLAYER_EVENT = 4
 
 
 class LocationEventCategories(Enum):
@@ -37,6 +38,10 @@ class GameEventCateogories(Enum):
     TURN_ENDED = 2
     GAME_STARTED = 3
     GAME_ENDED = 4
+
+
+class PlayerEventCategories(Enum):
+    DRAW_CARD = 1
 
 
 class CardEvent(Event):
@@ -93,7 +98,7 @@ class LocationEvent(Event):
         self.location = location
 
     def __str__(self) -> str:
-        return f"{self.location}: {self.__class__.__name__}"
+        return f"{self.__class__.__name__}: {self.location}"
 
 
 class LocationRevealed(LocationEvent):
@@ -145,3 +150,21 @@ class GameEnded(GameEvent):
     def __init__(self) -> None:
         super().__init__()
         self.sub_category = GameEventCateogories.GAME_ENDED
+
+
+class PlayerEvent(Event):
+
+    def __init__(self, player) -> None:
+        super().__init__(EventCategories.PLAYER_EVENT)
+        self.player = player
+
+
+class PlayerDrawCard(PlayerEvent):
+
+    def __init__(self, player, card) -> None:
+        super().__init__(player=player)
+        self.sub_category = PlayerEventCategories.DRAW_CARD
+        self.card = card
+
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}: {self.player} drew {self.card}"
