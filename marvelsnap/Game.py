@@ -1,14 +1,9 @@
 import random
 
-import Player
-from Board import Board
-import utils.GLOBAL_CONSTANTS
-from Card import Card
-from Location import Location
-import pprint
-from GameHistory import gameHistory
-from utils import GLOBAL_CONSTANTS
-import Event
+
+from marvelsnap import Player, Board, Card, Location, Event
+from marvelsnap.utils import GLOBAL_CONSTANTS
+from marvelsnap.GameHistory import gameHistory
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -17,7 +12,7 @@ if TYPE_CHECKING:
 
 class Game(object):
 
-    def __init__(self, board: Board, player0: Player.Player, player1: Player.Player) -> None:
+    def __init__(self, board: Board.Board, player0: Player.Player, player1: Player.Player) -> None:
         self.board = board
         self.player0 = player0
         self.player1 = player1
@@ -51,10 +46,10 @@ class Game(object):
         return legalMoves
 
     def getPlayerByIdx(self, idx: int):
-        if idx == 0:
-            return player0
-        elif idx == 1:
-            return player1
+        if idx == self.player0.playerIdx:
+            return self.player0
+        elif idx == self.player1.playerIdx:
+            return self.player1
         return None
 
     def updateTurn(self, turn):
@@ -62,7 +57,7 @@ class Game(object):
         self.gameHistory.updateTurn(turn)
         self.player0.availableEnergy = turn
         self.player0.turn = turn
-        self.player0.availableEnergy = turn
+        self.player1.availableEnergy = turn
         self.player1.turn = turn
         event = Event.TurnStarted()
         self.gameHistory.addEvent(event=event)
@@ -84,7 +79,7 @@ class Game(object):
     def beginTurn(self):
         self.updateTurn(self.turn + 1)
         self.revealLocation()
-        self.stage = utils.GLOBAL_CONSTANTS.TURN_STAGES["BEFORE_TURN"]
+        self.stage = GLOBAL_CONSTANTS.TURN_STAGES["BEFORE_TURN"]
         self.triggerAllLocationAbilities()
         # reset all information stored from previous turn and update turn
 
@@ -101,7 +96,7 @@ class Game(object):
         # print("NUMCARDS", self.player0.hand.getNumCards())
 
     def playTurn(self):
-        self.stage = utils.GLOBAL_CONSTANTS.TURN_STAGES["DURING_TURN"]
+        self.stage = GLOBAL_CONSTANTS.TURN_STAGES["DURING_TURN"]
         self.triggerAllLocationAbilities()
         player0PlayQueue = []
         player1PlayQueue = []
@@ -136,7 +131,7 @@ class Game(object):
         return playQueue
 
     def endTurn(self):
-        self.stage = utils.GLOBAL_CONSTANTS.TURN_STAGES["AFTER_TURN"]
+        self.stage = GLOBAL_CONSTANTS.TURN_STAGES["AFTER_TURN"]
         self.triggerAllLocationAbilities()
         for loc in self.board.locations:
             loc.triggerAllOngoing(self.player0.playerIdx, self)
@@ -144,20 +139,20 @@ class Game(object):
         event = Event.TurnEnded()
         self.gameHistory.addEvent(event=event)
 
-    def revealCards(self, playQueue: list[Card, Location, Player.Player]):
+    def revealCards(self, playQueue: list[Card.Card, Location.Location, Player.Player]):
         for card, location, player in playQueue:
             print(f"Player {player} played {card} at {location}!")
             card.onReveal(self)
             card.ongoing(self)
 
     def endGame(self):
-        gameWinner = self.board.playerIsWinning(player0)
+        gameWinner = self.board.playerIsWinning(self.player0)
         event = Event.GameEnded()
         if (gameWinner == 1):
-            # event = GLOBAL_CONSTANTS.GAME_ENDED(result=player0)
+            # event = GLOBAL_CONSTANTS.GAME_ENDED(result=self.player0)
             print("Player 0 wins!")
         elif (gameWinner == -1):
-            # event = GLOBAL_CONSTANTS.GAME_ENDED(result=player1)
+            # event = GLOBAL_CONSTANTS.GAME_ENDED(result=self.player1)
             print("Player 1 wins!")
         elif (gameWinner == 0):
             # event = GLOBAL_CONSTANTS.GAME_ENDED(result=None)
@@ -170,7 +165,7 @@ class Game(object):
             location.reveal()
 
     def playGame(self):
-        game.startGame()
+        self.startGame()
         print("Player 0 deck: ", str(self.player0.deck))
         print("Player 1 deck: ", str(self.player1.deck))
         for i in range(1, 7):
@@ -196,7 +191,7 @@ class Game(object):
                 break
         # pprint.pprint(self.gameHistory)
 
-    def visualizeBoard(self, board: Board):
+    def visualizeBoard(self, board: Board.Board):
         player0Cards = []
         player1Cards = []
         allLocations = []
@@ -208,7 +203,7 @@ class Game(object):
             allLocations.append(location)
 
         print("Player 1 (opponent):")
-        print("Hand:", player1.hand)
+        print("Hand:", self.player1.hand)
         print("-" * 124)
         # Print 4 spots for cards with cards, three lanes for player 1
         for i in range(3, -1, -1):
@@ -231,20 +226,19 @@ class Game(object):
                   str(player0Cards[1][i]).center(35)} | {str(player0Cards[2][i]).center(35)} |")
         print("-" * 124)
         print("Player 0 (you):")
-        print("Hand:", player0.hand)
+        print("Hand:", self.player0.hand)
         print("")
 
 
 if __name__ == "__main__":
-    import Card
     FLAT_CARD_DICT = Card.getFlatCardDict()
-    board = Board()
+    board = Board.Board()
     cards0 = [card() for card in random.sample(
         list(FLAT_CARD_DICT.values()), 6)]
     cards1 = [card() for card in random.sample(
         list(FLAT_CARD_DICT.values()), 6)]
     player0 = Player.Player(cards=cards0, playerIdx=0)
     player1 = Player.Player(cards=cards1, playerIdx=1)
-    game = Game(board, player0, player1)
+    game = Game.Game(board, player0, player1)
     game.playGame()
     print(gameHistory)
