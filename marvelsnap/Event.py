@@ -21,12 +21,9 @@ class EventCategories(Enum):
     GAME_EVENT = 3
 
 
-class CardEvent(Event):
-
-    def __init__(self, card: Card.Card, location: Location.Location) -> None:
-        super().__init__(EventCategories.CARD_EVENT)
-        self.card = card
-        self.location = location
+class LocationEventCategories(Enum):
+    LOCATION_REVEALED = 1
+    LOCATION_ABILTITY_TRIGGERED = 2
 
 
 class CardEventCategories(Enum):
@@ -35,6 +32,21 @@ class CardEventCategories(Enum):
     CARD_MOVED = 3
     CARD_DISCARDED = 4
     CARD_DESTROYED = 5
+
+
+class GameEventCateogories(Enum):
+    TURN_STARTED = 1
+    TURN_ENDED = 2
+    GAME_STARTED = 3
+    GAME_ENDED = 4
+
+
+class CardEvent(Event):
+
+    def __init__(self, card: Card.Card, location: Location.Location) -> None:
+        super().__init__(EventCategories.CARD_EVENT)
+        self.card = card
+        self.location = location
 
 
 class CardPlayed(CardEvent):
@@ -54,7 +66,7 @@ class CardRevealed(CardEvent):
 class CardMoved(CardEvent):
 
     def __init__(self, card: Card, location: Location.Location) -> None:
-        card, location)
+        super().__init__(card, location)
         self.sub_category = CardEventCategories.CARD_MOVED
 
 
@@ -78,9 +90,6 @@ class LocationEvent(Event):
         super().__init__(EventCategories.LOCATION_EVENT)
         self.location = location
 
-class LocationEventCategories(Enum):
-    LOCATION_REVEALED = 1
-    LOCATION_ABILTITY_TRIGGERED = 2
 
 class LocationRevealed(LocationEvent):
 
@@ -88,28 +97,43 @@ class LocationRevealed(LocationEvent):
         super().__init__(location)
         self.sub_category = LocationEventCategories.LOCATION_REVEALED
 
+
 class LocationAbilityTriggered(LocationEvent):
 
     def __init__(self, location: Location) -> None:
         super().__init__(location)
         self.sub_category = LocationEventCategories.LOCATION_ABILTITY_TRIGGERED
 
+
 class GameEvent(Event):
 
     def __init__(self) -> None:
         super().__init__(EventCategories.GAME_EVENT)
 
-# LOCATION ACTIONS
+
+class TurnStarted(GameEvent):
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.sub_category = GameEventCateogories.TURN_STARTED
 
 
-def LOCATION_REVEALED(location): return ["locationRevealed", location]
-def LOCATION_ABILTITY_TRIGGERED(location): return [
-    "locationAbilityTriggered", location]
+class TurnEnded(GameEvent):
 
-# GAME ACTIONS
+    def __init__(self) -> None:
+        super().__init__()
+        self.sub_category = GameEventCateogories.TURN_ENDED
 
 
-def TURN_STARTED(): return ["turnStarted"]
-def TURN_ENDED(): return ["turnEnded"]
-def GAME_STARTED(): return ["gameStarted"]
-def GAME_ENDED(result): return ["gameEnded", result]
+class GameStarted(GameEvent):
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.sub_category = GameEventCateogories.GAME_STARTED
+
+
+class GameEnded(GameEvent):
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.sub_category = GameEventCateogories.GAME_ENDED
