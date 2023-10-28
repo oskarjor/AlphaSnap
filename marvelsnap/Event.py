@@ -47,6 +47,9 @@ class CardEvent(Event):
         self.card = card
         self.location = location
 
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__} - P{self.player} (Card: {self.card} -> Loc: {self.location})"
+
 
 class CardPlayed(CardEvent):
 
@@ -89,6 +92,9 @@ class LocationEvent(Event):
         super().__init__(EventCategories.LOCATION_EVENT)
         self.location = location
 
+    def __str__(self) -> str:
+        return f"{self.location}: {self.__class__.__name__}"
+
 
 class LocationRevealed(LocationEvent):
 
@@ -108,6 +114,9 @@ class GameEvent(Event):
 
     def __init__(self) -> None:
         super().__init__(EventCategories.GAME_EVENT)
+
+    def __str__(self) -> str:
+        return self.__class__.__name__
 
 
 class TurnStarted(GameEvent):

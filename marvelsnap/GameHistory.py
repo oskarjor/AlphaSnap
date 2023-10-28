@@ -32,6 +32,16 @@ class GameHistory(object):
         self.history = {}
         self.current_turn = 0
 
+    def __str__(self) -> str:
+        keys = list(self.history.keys())
+        keys.sort()
+        return_str = ""
+        for k in keys:
+            return_str += f"Turn {k}\n"
+            for i, event in enumerate(self.history[k]):
+                return_str += f"\tEvent {i+1}: {event}\n"
+        return return_str
+
     def addEvent(self, event: Event.Event, turn: int | None = None) -> None:
         if turn == None:
             turn = self.current_turn
